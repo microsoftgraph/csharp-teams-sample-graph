@@ -1,0 +1,146 @@
+﻿<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
+        See LICENSE in the source repository root for complete license information. -->
+@using Resources
+@{
+    ViewBag.Title = Resource.App_Name;
+}
+
+@model Microsoft_Teams_Graph_RESTAPIs_Connect.Models.ResultsViewModel
+
+<h1>@ViewBag.Title</h1>
+<h3>Choose operation:</h3>
+<div class="col-md-offset-1">
+    @Html.ActionLink("Get My Teams", "GetMyTeamsLoad", "Home")<br />
+    @Html.ActionLink("Get Channels", "GetChannelsLoad", "Home")<br />
+    @Html.ActionLink("Create Channel", "CreateChannelLoad", "Home")<br />
+    @Html.ActionLink("Post Message", "PostMessageLoad", "Home")<br />
+</div>
+@if (ViewBag.GetMyTeamsLoad != null)
+{
+    <h3>@Resource.TeamsGraph_GetMyTeams_Heading</h3>
+}
+@using (Html.BeginForm("GetMyTeams", "Home"))
+{
+    <div class="col-sm-12">
+        <div class="form-group">
+            @if (ViewBag.GetMyTeamsLoad != null)
+            {
+                <button class="btn btn-default @(ViewBag.UserId == null ? "disabled" : null)">@Resource.TeamsGraph_GetMyTeams_Button</button>
+                <input type="hidden" name="user-id" value=@ViewBag.UserId />
+            }
+        </div>
+    </div>
+}
+@if (ViewBag.GetMyTeamsResult != null)
+{
+    <h5><b>@Resource.TeamsGraph_GetMyTeams_Results_Label</b></h5>
+}
+
+@if (ViewBag.GetChannelsLoad != null)
+{
+    <h3>@Resource.TeamsGraph_GetChannels_Heading</h3>
+}
+@using (Html.BeginForm("GetChannels", "Home"))
+{
+    <div class="col-sm-12">
+        <div class="form-group">
+            @if (ViewBag.GetChannelsLoad != null)
+            {
+                <label for="team-id">@Resource.TeamsGraph_Team_Id_Label</label>
+                <input name="team-id" type="text" class="form-control" value="@ViewBag.TeamId" @(ViewBag.UserId == null ? "disabled" : null) />
+            }
+        </div>
+        <div class="form-group">
+            @if (ViewBag.GetChannelsLoad != null)
+            {
+                <button class="btn btn-default @(ViewBag.UserId == null ? "disabled" : null)">@Resource.TeamsGraph_GetChannels_Button</button>
+                <input type="hidden" name="user-id" value=@ViewBag.UserId />
+            }
+        </div>
+    </div>
+}
+@if (ViewBag.GetChannelsResult != null)
+{
+    <h5><b>@Resource.TeamsGraph_GetChannels_Results_Label</b></h5>
+}
+@if (ViewBag.CreateChannelLoad != null)
+{
+    <h3>@Resource.TeamsGraph_CreateChannel_Heading</h3>
+}
+@using (Html.BeginForm("CreateChannel", "Home"))
+{
+    <div class="col-sm-12">
+        <div class="form-group">
+            @if (ViewBag.CreateChannelLoad != null)
+            {
+                <label for="team-id">@Resource.TeamsGraph_Team_Id_Label</label>
+                <input name="team-id" type="text" class="form-control" value="@ViewBag.TeamId" @(ViewBag.UserId == null ? "disabled" : null) />
+            }
+        </div>
+        <div class="form-group">
+            @if (ViewBag.CreateChannelLoad != null)
+            {
+                <label for="channel-name">@Resource.TeamsGraph_CreateChannel_Name_Label</label>
+                <input name="channel-name" type="text" class="form-control" value="@ViewBag.ChannelName" @(ViewBag.UserId == null ? "disabled" : null) />
+            }
+        </div>
+        <div class="form-group">
+            @if (ViewBag.CreateChannelLoad != null)
+            {
+                <label for="channel-description">@Resource.TeamsGraph_CreateChannel_Description_Label</label>
+                <input name="channel-description" type="text" class="form-control" value="@ViewBag.Channelescription" @(ViewBag.UserId == null ? "disabled" : null) />
+            }
+        </div>
+        <div class="form-group">
+            @if (ViewBag.CreateChannelLoad != null)
+            {
+                <button class="btn btn-default @(ViewBag.UserId == null ? "disabled" : null)">@Resource.TeamsGraph_CreateChannel_Button</button>
+                <input type="hidden" name="user-id" value=@ViewBag.UserId />
+            }
+        </div>
+    </div>
+}
+<div class="col-sm-12">
+    <p class="@(ViewBag.CreateChannelMessage == null ? "hidden" : null)"><h4><b>@Html.Raw(ViewBag.CreateChannelMessage)</b></h4></p>
+</div>
+@if (ViewBag.PostMessageLoad != null)
+{
+    <h3>@Resource.TeamsGraph_PostMessage_Heading</h3>
+}
+@using (Html.BeginForm("PostMessage", "Home"))
+{
+    <div class="col-sm-12">
+        <div class="form-group">
+            @if (ViewBag.PostMessageLoad != null)
+            {
+                <label for="team-id">@Resource.TeamsGraph_Team_Id_Label</label>
+                <input name="team-id" type="text" class="form-control" value="@ViewBag.TeamId" @(ViewBag.UserId == null ? "disabled" : null) />
+            }
+        </div>
+        <div class="form-group">
+            @if (ViewBag.PostMessageLoad != null)
+            {
+                <label for="channel-id">@Resource.TeamsGraph_Channel_Id_Label</label>
+                <input name="channel-id" type="text" class="form-control" value="@ViewBag.ChannelId" @(ViewBag.UserId == null ? "disabled" : null) />
+            }
+        </div>
+        <div class="form-group">
+            @if (ViewBag.PostMessageLoad != null)
+            {
+                <label for="message">@Resource.TeamsGraph_PostMessage_Label</label>
+                <input name="message" type="text" class="form-control" value="@Resource.TeamsGraph_PostMessage_Text @Resource.App_Name_Short" @(ViewBag.UserId == null ? "disabled" : null) />
+            }
+        </div>
+        <div class="form-group">
+            @if (ViewBag.PostMessageLoad != null)
+            {
+                <button class="btn btn-default @(ViewBag.UserId == null ? "disabled" : null)">@Resource.TeamsGraph_PostMessage_Button</button>
+                <input type="hidden" name="user-id" value=@ViewBag.UserId />
+            }
+        </div>
+    </div>
+}
+<div class="col-sm-12">
+    <p class="@(ViewBag.PostMessage == null ? "hidden" : null)"><h4><b>@Html.Raw(ViewBag.PostMessage)</b></h4></p>
+</div>
+@Html.Partial("_ResultsPartial")
