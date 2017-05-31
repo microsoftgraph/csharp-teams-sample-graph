@@ -28,7 +28,3 @@
 5. Sign in with your personal account (MSA) or your work or school account, and grant the requested permissions.
 6. Choose operation, such as 'Get My Teams', 'Get Channels', 'Create Channel' or 'Post Message'.
 7. Response information is displayed at the bottom of the page.
-8. Please update following section of the web config as per your created application details.
-   * <add key="ida:AppId" value="Enter AppId of your application" />
-   * <add key="ida:AppSecret" value="Enter AppSecret of your application" />
-   * <add key="ida:RedirectUri" value="Enter RedirectUri of your application" />
