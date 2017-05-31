@@ -1,0 +1,101 @@
+<html>
+
+<head>
+	<title>Sample app for Microsoft Teams APIs in Microsoft Graph</title>
+	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div id="pageheader" class="container">
+		<h1>Send a message into a channel</h1>
+	</div>
+    <div id="teamheader" class="container">
+		<h2 >Choose team:</h2>
+		<div id="teams" class="container"></div>
+	</div>
+    <div id="channelheader" class="container">
+		<h2>Choose channel:</h2>
+		<div id="channels" class="container"></div>
+	</div>
+	<div id="sendmessageheader" class="container">
+		<h2>Send message:</h2>
+		<div id="sendmessages" class="container">
+			<form>
+				<div class="form-group">
+				<textarea class="form-control" rows="5" id="message"></textarea>
+				</div>
+				<button type="button" class="btn btn-default" id="sendmessagebutton">Send</button>
+			</form>
+		</div>
+		<div id="sentsuccessfully" class="alert alert-success">Sent successfully!</div>
+	</div>
+
+	<script type="text/javascript">
+		$('#channelheader').hide();	
+		$('#sendmessageheader').hide();	
+		$('#sentsuccessfully').hide();	
+   		var host = `http://${window.location.hostname}`;
+	   	var port = window.location.port;
+		if (port) { host += ':' + port}
+
+		//Find out what teams user belongs to, and show them in a list
+		$.get(`${host}/graph/beta/me/joinedTeams`, function (groupData) {
+			var html = `<ul class="list-group">`;
+			for (var j = 0; j < groupData.value.length; j++) {					
+				html += `<li class="list-group-item team" id="${groupData.value[j].id}">${groupData.value[j].displayName}</li>`
+			}
+			html += `</ul>`;
+			$('#teams').html(html);
+
+			//When team clicked, select it, find what channels it has, and show them in a list.
+			$('.team').on('click', function () {
+				$('.team').removeClass('active');
+				$(this).addClass('active');
+				var teamId = $(this).attr('id');
+				$('#channelheader').show();
+				$.get(`${host}/graph/beta/groups/${teamId}/channels`, function (channelData) {
+					var html = `<ul class="list-group">`;
+					for (var k = 0; k < channelData.value.length; k++) {					
+						html += `<li class="list-group-item channel" id="${channelData.value[k].id}">${channelData.value[k].displayName}</li>`
+					}
+					html += `</ul>`;
+					$('#channels').html(html);
+
+					//When channel clicked, select it, and show the text compose box.
+					$('.channel').on('click', function () {
+						$('.channel').removeClass('active');
+						$(this).addClass('active');
+						var channelId = $(this).attr('id');
+						$('#sendmessageheader').show();
+
+						//When send button clicked, send the message as new chat thread in the selected channel.
+						$('#sendmessagebutton').on('click', function () {
+							var message = $('#message').val();
+							var data = {
+									"rootMessage": {
+										"body": {
+											"contentType": 1,
+											"content": message
+										}
+									}
+								};
+							$.ajax({
+								type: "POST",
+								url: `${host}/graph/beta/groups/${teamId}/channels/${channelId}/chatThreads`,
+								data: JSON.stringify(data),                      
+								contentType: "application/json",
+								processData: false
+							}).done(function() {
+								$('#sentsuccessfully').show();
+							});
+						});
+					});
+				});
+			});
+		});
+	</script>
+</body>
+
+</html>

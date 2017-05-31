@@ -1,0 +1,16 @@
+{
+  "name": "Teams_Sample_Graph_Node_App",
+  "version": "1.0.0",
+  "description": "This is a small sample app using the Microsoft Teams APIs in the Microsoft Graph",
+  "main": "app.js",
+  "author": "Richard Taylor",
+  "license": "ISC",
+  "dependencies": {
+    "fs-extra": "^2.1.2",
+    "node-rest-client": "^3.1.0",
+    "node-uuid": "^1.4.8",
+    "oauth": "^0.9.14",
+    "restify": "^4.3.0",
+    "restify-cookies": "^0.2.2"
+  }
+}
