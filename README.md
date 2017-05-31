@@ -1,7 +1,7 @@
 
 This repo contains sample apps that use the Microsoft Teams APIs in Microsoft Graph.
 
-* [Node](https://github.com/OfficeDev/microsoft-teams-sample-graph/tree/master/Node/SampleApp")
+* [Node](https://github.com/OfficeDev/microsoft-teams-sample-graph/tree/master/Node/SampleApp)
 * C#
 
 # Contributing
