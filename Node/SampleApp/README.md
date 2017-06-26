@@ -1,8 +1,22 @@
-# node.js sample app for Microsoft Teams APIs in Microsoft Graph
+# Node.js sample app for Microsoft Teams APIs in Microsoft Graph
 
-## Setting up:
-1. Clone the repo, then type: “npm install --save” 
-2. Register an app at https://apps.dev.microsoft.com.  Note the app ID and secret.  Configure http://localhost:3998/login as a redirect URI
-3. In app.js, update the process.env variables with your app's ID and secret and 'localhost:3998' as the hostname.
-4. Run “node app.js”.  
-5. Go to http://localhost:3998 in your browser.
+This sample app, written in Node.js, shows a web site calling the Microsoft Graph Team APIs.  
+
+## Prerequisites
+The minimum prerequisites to run this sample are:
+* The latest update of Visual Studio. You can download the community version [here](http://www.visualstudio.com) for free.
+* An Office 365 account with access to Microsoft Teams, with [sideloading enabled](https://msdn.microsoft.com/en-us/microsoft-teams/setup).
+* An account with the [appropriate rights](./README.md) to register and run the samples.
+
+## Register the application:
+Please see the project's [Read Me file](./README.md) for more details.  Note that for 
+
+## Build and run the sample app
+1. In app.js, update the process.env variables with your app's ID and secret and 'localhost:3998' as the hostname.
+2. Run “node app.js”.  
+3. Go to http://localhost:3998 in your browser.
+4. Sign in with your account, and grant the requested permissions.
+    * Note you'll need to have appropriate elevated rights to run the app (Group.ReadWrite.All and User.ReadWrite.All)
+5. Choose operation, such as 'Get My Teams', 'Get Channels', 'Create Channel' or 'Post Message'.
+6. Response information is displayed at the bottom of the page.
+
