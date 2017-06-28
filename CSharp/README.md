@@ -6,10 +6,10 @@ This sample app, written in C#, shows a web site calling the Microsoft Graph Tea
 The minimum prerequisites to run this sample are:
 * The latest update of Visual Studio. You can download the community version [here](http://www.visualstudio.com) for free.
 * An Office 365 account with access to Microsoft Teams, with [sideloading enabled](https://msdn.microsoft.com/en-us/microsoft-teams/setup).
-* An account with the [appropriate rights](./README.md) to register and run the samples.
+* An account with the [appropriate rights](../README.md) to register and run the samples.
 
 ## Register the application:
-Please see the project's [Read Me file](./README.md) for more details.  
+Please see the project's [Read Me file](../README.md) for more details.  
 
 ## Build and run the sample app
 1.  Open the sample solution in Visual Studio.

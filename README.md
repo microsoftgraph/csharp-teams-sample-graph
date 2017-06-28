@@ -9,7 +9,8 @@ This sample shows how you can use the new beta Microsoft Teams Graph APIs to:
 * Query channels for a team
 * Send a message to a channel
 
-* [Node](https://github.com/OfficeDev/microsoft-teams-sample-graph/tree/master/Node/SampleApp)
+The sample is provided in two flavors:
+* [Node](https://github.com/OfficeDev/microsoft-teams-sample-graph/tree/master/Node)
 * [C#](https://github.com/OfficeDev/microsoft-teams-sample-graph/tree/master/CSharp)
 
 > For more information on developing apps for Microsoft Teams, please review the Microsoft Teams [developer documentation](https://msdn.microsoft.com/en-us/microsoft-teams/index).**
