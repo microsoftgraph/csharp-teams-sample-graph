@@ -1,0 +1,20 @@
+### YamlMime:Sample
+sample:
+- name: Microsoft Teams Graph API Samples
+  path: ''
+  description: Sample apps (C# and node) for accessing Microsoft Teams data via the Microsoft Graph
+  readme: ''
+  generateZip: FALSE
+  isLive: TRUE
+  technologies:
+  - Microsoft Graph
+  azureDeploy: ''
+  author: richardtaylorrt
+  platforms: []
+  languages:
+  - C#
+  - node.js
+  extensions:
+    products:
+    - Microsoft Teams
+    scenarios: []
