@@ -1,4 +1,4 @@
-﻿# Contribute to Microsoft Teams developer documentation
+﻿# Contribute to Microsoft Teams sample
 
 Thank you for your interest in this sample! Your contributions and improvements will help the developer community.
 
