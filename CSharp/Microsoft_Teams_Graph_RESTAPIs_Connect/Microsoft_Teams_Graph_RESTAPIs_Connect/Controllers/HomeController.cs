@@ -9,13 +9,21 @@ using Microsoft_Teams_Graph_RESTAPIs_Connect.Auth;
 using Microsoft_Teams_Graph_RESTAPIs_Connect.Models;
 using Resources;
 using System;
+using GraphAPI.ICore;
+using System.Net.Http;
 
-namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Controllers
+
+namespace GraphAPI.Web.Controllers
 {
     public class HomeController : Controller
     {
-        GraphService graphService = new GraphService();
+        readonly IGraphDetails graphService ;
 
+        public HomeController()
+        {
+            graphService = new Core.GraphDetails();
+
+        }
         public ActionResult Index()
         {
             return View("Graph");
@@ -92,7 +100,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Controllers
             try
             {
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                results.Items = await graphService.GetMyTeams(accessToken);
+                results.Items = await graphService.GetMyTeams(accessToken, Convert.ToString(Resource.Prop_ID));
 
                 // Reset the status to display when the page reloads.
                 ViewBag.UserId = Request.Form["user-id"];
@@ -120,7 +128,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Controllers
             try
             {
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                results.Items = await graphService.GetChannels(accessToken, Request.Form["team-id"]);
+                results.Items = await graphService.GetChannels(accessToken, Request.Form["team-id"], Resource.Prop_ID);
 
                 // Reset the status to display when the page reloads.
                 ViewBag.UserId = Request.Form["user-id"];
@@ -147,8 +155,12 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Controllers
             try
             {
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                ViewBag.CreateChannelMessage = await graphService.CreateChannel(accessToken,
+                HttpResponseMessage response = await graphService.CreateChannel(accessToken,
                     Request.Form["team-id"], Request.Form["channel-name"], Request.Form["channel-description"]);
+                if (response != null && response.IsSuccessStatusCode)
+                    ViewBag.CreateChannelMessage = Resource.TeamsGraph_CreateChannel_Success_Result;
+                else
+                    ViewBag.CreateChannelMessage = response.ReasonPhrase;
 
                 // Reset the status to display when the page reloads.
                 ViewBag.UserId = Request.Form["user-id"];
@@ -176,8 +188,13 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Controllers
             try
             {
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                ViewBag.PostMessage = await graphService.PostMessage(accessToken,
+                HttpResponseMessage response = await graphService.PostMessage(accessToken,
                     Request.Form["team-id"], Request.Form["channel-id"], Request.Form["message"]);
+
+                if (response != null && response.IsSuccessStatusCode)
+                    ViewBag.PostMessage = Resource.TeamsGraph_PostMessage_Success_Result;
+                else
+                    ViewBag.PostMessage = response.ReasonPhrase;
 
                 // Reset the status to display when the page reloads.
                 ViewBag.UserId = Request.Form["user-id"];
