@@ -13,8 +13,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using Resources;
-using GraphAPI.ICore;
-using GraphAPI.Common;
+using Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles;
 
 namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Auth
 {
@@ -22,10 +21,10 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Auth
     {
 
         // Properties used to get and manage an access token.
-        private string redirectUri = Utility.RedirectUri;
-        private string appId = Utility.AppId;
-        private string appSecret = Utility.AppSecret;
-        private string scopes = Utility.Scopes;
+        private string redirectUri = ServiceHelper.RedirectUri;
+        private string appId = ServiceHelper.AppId;
+        private string appSecret = ServiceHelper.AppSecret;
+        private string scopes = ServiceHelper.Scopes;
         private SessionTokenCache tokenCache { get; set; }
 
         private static readonly AuthProvider instance = new AuthProvider();

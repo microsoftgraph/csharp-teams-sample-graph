@@ -9,19 +9,19 @@ using Microsoft_Teams_Graph_RESTAPIs_Connect.Auth;
 using Microsoft_Teams_Graph_RESTAPIs_Connect.Models;
 using Resources;
 using System;
-using GraphAPI.ICore;
-using System.Net.Http;
 
+using System.Net.Http;
+using Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles;
 
 namespace GraphAPI.Web.Controllers
 {
     public class HomeController : Controller
     {
-        readonly IGraphDetails graphService ;
+        readonly GraphService graphService ;
 
         public HomeController()
         {
-            graphService = new Core.GraphDetails();
+            graphService = new GraphService();
 
         }
         public ActionResult Index()
@@ -53,7 +53,7 @@ namespace GraphAPI.Web.Controllers
             await GetMyId();
 
             ViewBag.CreateChannelLoad = "Enable";
-            return View("Graph");
+            return PartialView("_CreateChannel");
         }
 
         [Authorize]

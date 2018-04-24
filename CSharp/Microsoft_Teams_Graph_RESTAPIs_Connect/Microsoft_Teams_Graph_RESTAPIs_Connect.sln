@@ -5,14 +5,6 @@ VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphAPI.Web", "Microsoft_Teams_Graph_RESTAPIs_Connect\GraphAPI.Web.csproj", "{9497154D-1F71-402C-A6DC-130FB6B8F39C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphAPI.Common", "GraphAPI.Common\GraphAPI.Common.csproj", "{F5B20AE1-284B-4941-AD5B-71EBD402B136}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphAPI.ICore", "GraphAPI.ICore\GraphAPI.ICore.csproj", "{52C3B208-F155-4403-9F3E-FDC2D813D704}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphAPI.Models", "GraphAPI.Models\GraphAPI.Models.csproj", "{325A81C6-F53C-48F5-AA62-E0BE1F3DCAD4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphAPI.Core", "GraphAPI.Core\GraphAPI.Core.csproj", "{A81A5738-67F5-4471-82B5-843CDC24FF08}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,22 +15,6 @@ Global
 		{9497154D-1F71-402C-A6DC-130FB6B8F39C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9497154D-1F71-402C-A6DC-130FB6B8F39C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9497154D-1F71-402C-A6DC-130FB6B8F39C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F5B20AE1-284B-4941-AD5B-71EBD402B136}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5B20AE1-284B-4941-AD5B-71EBD402B136}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F5B20AE1-284B-4941-AD5B-71EBD402B136}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F5B20AE1-284B-4941-AD5B-71EBD402B136}.Release|Any CPU.Build.0 = Release|Any CPU
-		{52C3B208-F155-4403-9F3E-FDC2D813D704}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{52C3B208-F155-4403-9F3E-FDC2D813D704}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{52C3B208-F155-4403-9F3E-FDC2D813D704}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{52C3B208-F155-4403-9F3E-FDC2D813D704}.Release|Any CPU.Build.0 = Release|Any CPU
-		{325A81C6-F53C-48F5-AA62-E0BE1F3DCAD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{325A81C6-F53C-48F5-AA62-E0BE1F3DCAD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{325A81C6-F53C-48F5-AA62-E0BE1F3DCAD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{325A81C6-F53C-48F5-AA62-E0BE1F3DCAD4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A81A5738-67F5-4471-82B5-843CDC24FF08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A81A5738-67F5-4471-82B5-843CDC24FF08}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A81A5738-67F5-4471-82B5-843CDC24FF08}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A81A5738-67F5-4471-82B5-843CDC24FF08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

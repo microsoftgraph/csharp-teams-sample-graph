@@ -3,7 +3,7 @@
 *  See LICENSE in the source repository root for complete license information. 
 */
 
-using GraphAPI.Models;
+
 using System.Collections.Generic;
 using System.Linq;
 
