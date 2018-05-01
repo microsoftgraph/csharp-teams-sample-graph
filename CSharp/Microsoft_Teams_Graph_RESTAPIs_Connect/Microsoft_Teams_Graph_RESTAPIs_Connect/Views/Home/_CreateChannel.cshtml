@@ -6,7 +6,7 @@
 {
     <h3>@Resource.TeamsGraph_CreateChannel_Heading</h3>
 }
-@using (Html.BeginForm("CreateChannel", "Home"))
+@using (Ajax.BeginForm("CreateChannel", "Home", new AjaxOptions() { UpdateTargetId="Result", OnComplete="onSuccess" }))
 {
     <div class="col-sm-12">
         <div class="form-group">
@@ -39,7 +39,7 @@
         </div>
     </div>
 }
-<div class="col-sm-12">
-    <p class="@(ViewBag.CreateChannelMessage == null ? "hidden" : null)"><h4><b>@Html.Raw(ViewBag.CreateChannelMessage)</b></h4></p>
+<div id="Result" class="col-sm-12">
+    @*<p class="@(ViewBag.CreateChannelMessage == null ? "hidden" : null)"><h4><b>@Html.Raw(ViewBag.CreateChannelMessage)</b></h4></p>*@
 </div>
 

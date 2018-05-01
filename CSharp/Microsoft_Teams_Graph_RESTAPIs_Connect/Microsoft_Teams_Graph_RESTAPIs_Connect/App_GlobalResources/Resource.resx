@@ -189,6 +189,14 @@
     <value>Success! New channel is created.</value>
     <comment>Success message for 'create channel' section in Graph view</comment>
   </data>
+  <data name="TeamsGraph_CreateGroup_Heading" xml:space="preserve">
+    <value>Create Group</value>
+    <comment>Heading for 'create Group' section in Graph view</comment>
+  </data>
+  <data name="TeamsGraph_CreateMember_Heading" xml:space="preserve">
+    <value>Add Member</value>
+    <comment>Heading for 'Add Member" section in Graph view</comment>
+  </data>
   <data name="TeamsGraph_GetChannels_Button" xml:space="preserve">
     <value>Get</value>
     <comment>Button text for 'get channels' section in Graph view</comment>

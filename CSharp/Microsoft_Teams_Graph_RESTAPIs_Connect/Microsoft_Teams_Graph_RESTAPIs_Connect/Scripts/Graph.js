@@ -8,7 +8,7 @@
 
 
         $.ajax({
-            url: "/Home/GetChannels",
+            url: "/Home/",
             method: "POST",
             data: { 'team-id': teamId, 'user-id': userId },
             success: function (result) {
@@ -18,10 +18,7 @@
         });
     },
 
-    onSuccess: function (result) {
-        $('#MyTeamResult').html(result);
-        $('#MyTeamResult').show();
-    }
+    
 
 
 
