@@ -241,6 +241,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create Team.
+        /// </summary>
+        internal static string TeamsGraph_CreateTeam_Heading {
+            get {
+                return ResourceManager.GetString("TeamsGraph_CreateTeam_Heading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Get.
         /// </summary>
         internal static string TeamsGraph_GetChannels_Button {
@@ -345,6 +354,15 @@ namespace Resources {
         internal static string TeamsGraph_Team_Id_Label {
             get {
                 return ResourceManager.GetString("TeamsGraph_Team_Id_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Team.
+        /// </summary>
+        internal static string TeamsGraph_UpdateTeam_Heading {
+            get {
+                return ResourceManager.GetString("TeamsGraph_UpdateTeam_Heading", resourceCulture);
             }
         }
     }

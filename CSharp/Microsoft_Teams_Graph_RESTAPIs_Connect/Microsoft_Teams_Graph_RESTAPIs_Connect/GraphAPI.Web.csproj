@@ -324,6 +324,7 @@
     <Content Include="Views\Home\_Channels.cshtml" />
     <Content Include="Views\Home\_Group.cshtml" />
     <Content Include="Views\Home\_Member.cshtml" />
+    <Content Include="Views\Home\_CreateUpdateTeam.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_GlobalResources\Resource.resx">

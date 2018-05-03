@@ -151,13 +151,16 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
                 return Resource.TeamsGraph_CreateChannel_Success_Result;
             }
 
-            await CreateTeam("", accessToken);
+            string responseBody = await response.Content.ReadAsStringAsync(); ;
+            string teamId = responseBody.Deserialize<Group>().id;
+
+            await CreateTeam(teamId, accessToken);
             return response.ReasonPhrase;
         }
 
-        public async Task<String> CreateTeam(string teamId, string accessToken)
+        public async Task<String> CreateTeam(string groupId, string accessToken)
         {
-            string endpoint = ServiceHelper.GraphRootUri + "groups/" + teamId + "/team";
+            string endpoint = ServiceHelper.GraphRootUri + "groups/" + groupId + "/team";
             Team team = new Models.Team();
             team.TeamGuestSettings = new Models.TeamGuestSettings() { allowCreateUpdateChannels = false, allowDeleteChannels = false };
 
@@ -168,9 +171,9 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
         }
 
 
-        public async Task<String> UpdateTeam(string teamId, string accessToken)
+        public async Task<String> UpdateTeam(string groupId, string accessToken)
         {
-            string endpoint = ServiceHelper.GraphRootUri + "groups/" + teamId + "/team";
+            string endpoint = ServiceHelper.GraphRootUri + "groups/" + groupId + "/team";
             Team team = new Models.Team();
             team.TeamGuestSettings = new Models.TeamGuestSettings() { allowCreateUpdateChannels = false, allowDeleteChannels = false };
 
@@ -193,7 +196,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Get, endpoint, accessToken);
             string responseBody = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
-                throw new Exception(responseBody);
+                throw new Exception(response.ReasonPhrase);
 
             String userId = responseBody.Deserialize<Member>().id;
 
