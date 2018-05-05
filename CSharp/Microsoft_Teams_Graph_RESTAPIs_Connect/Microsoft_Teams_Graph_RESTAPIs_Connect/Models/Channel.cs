@@ -7,7 +7,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
 {
     public class Channel
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string displayName { get; set; }
+        public string description { get; set; }
     }
 }

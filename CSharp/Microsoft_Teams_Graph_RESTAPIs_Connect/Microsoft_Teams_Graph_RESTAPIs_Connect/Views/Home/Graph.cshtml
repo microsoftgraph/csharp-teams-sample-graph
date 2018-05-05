@@ -30,10 +30,14 @@
 @Html.Partial("_CreateChannel")
 @Html.Partial("_PostMessage")
 
-@Html.Partial("_Group")
-@Html.Partial("_Member")
-@Html.Partial("_CreateUpdateTeam")
+@Html.Partial("_Group");
 
+
+@*@if (Model is Microsoft_Teams_Graph_RESTAPIs_Connect.Models.Group) {
+    Html.Partial("_Group");
+    Html.Partial("_Member");
+    Html.Partial("_CreateUpdateTeam");
+}*@
 
 @Html.Partial("_ResultsPartial")
 

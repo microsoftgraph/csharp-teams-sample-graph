@@ -66,7 +66,11 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
                     request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
                     if (content != null)
-                        request.Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
+                    {
+                        string c = JsonConvert.SerializeObject(content);
+                        request.Content = new StringContent(c, Encoding.UTF8, "application/json");
+                    }
+                        
                     response = await client.SendAsync(request);
                 }
             }

@@ -232,6 +232,15 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Success! New group is created..
+        /// </summary>
+        internal static string TeamsGraph_CreateGroup_Success_Result {
+            get {
+                return ResourceManager.GetString("TeamsGraph_CreateGroup_Success_Result", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Member.
         /// </summary>
         internal static string TeamsGraph_CreateMember_Heading {

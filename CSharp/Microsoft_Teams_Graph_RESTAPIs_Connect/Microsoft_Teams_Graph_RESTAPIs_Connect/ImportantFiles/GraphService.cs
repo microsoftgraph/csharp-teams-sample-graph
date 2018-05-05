@@ -37,8 +37,8 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
 
             Channel content = new Channel()
             {
-                Description = channelDescription,
-                Name = channelName
+                description = channelDescription,
+                displayName = channelName
             };
 
             HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, content);

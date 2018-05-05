@@ -26,6 +26,7 @@ namespace GraphAPI.Web.Controllers
             graphService = new GraphService();
 
         }
+
         public ActionResult Index()
         {
             return View("Graph");
@@ -194,7 +195,7 @@ namespace GraphAPI.Web.Controllers
                 HttpResponseMessage response = await graphService.CreateChannel(accessToken,
                     Request.Form["team-id"], Request.Form["channel-name"], Request.Form["channel-description"]);
                 if (response != null && response.IsSuccessStatusCode)
-                    ViewBag.CreateChannelMessage = Resource.TeamsGraph_CreateChannel_Success_Result;
+                    ViewBag.CreateChannelMessage = Resource.TeamsGraph_CreateGroup_Success_Result;
                 else
                     ViewBag.CreateChannelMessage = response.ReasonPhrase;
 
