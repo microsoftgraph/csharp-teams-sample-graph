@@ -85,7 +85,6 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
                 userId = json.GetValue("id").ToString();
             }
             return userId?.Trim();
-
         }
 
         /// <summary>
@@ -119,11 +118,11 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
 
             PostMessage content = new PostMessage()
             {
-                RootMessage = new RootMessage()
+                rootMessage = new RootMessage()
                 {
-                    Body = new Message()
+                    body = new Message()
                     {
-                        Content = message
+                        content = message
                     }
                 }
             };
@@ -144,7 +143,6 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
                 group.visibility = "Private";
             }
 
-
             HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, group);
             if (response != null && response.IsSuccessStatusCode)
             {
@@ -162,7 +160,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
         {
             string endpoint = ServiceHelper.GraphRootUri + "groups/" + groupId + "/team";
             Team team = new Models.Team();
-            team.TeamGuestSettings = new Models.TeamGuestSettings() { allowCreateUpdateChannels = false, allowDeleteChannels = false };
+            team.teamGuestSettings = new Models.TeamGuestSettings() { allowCreateUpdateChannels = false, allowDeleteChannels = false };
 
             HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, team);
             if (!response.IsSuccessStatusCode)
@@ -175,7 +173,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
         {
             string endpoint = ServiceHelper.GraphRootUri + "groups/" + groupId + "/team";
             Team team = new Models.Team();
-            team.TeamGuestSettings = new Models.TeamGuestSettings() { allowCreateUpdateChannels = false, allowDeleteChannels = false };
+            team.teamGuestSettings = new Models.TeamGuestSettings() { allowCreateUpdateChannels = false, allowDeleteChannels = false };
 
             team.memberSettings = new Models.TeamMemberSettings() { allowCreateUpdateChannels = false, allowDeleteChannels = false,allowAddRemoveApps=true, allowCreateUpdateRemoveConnectors=false, allowCreateUpdateRemoveTabs=true };
             team.messagingSettings = new Models.TeamMessagingSettings() { allowChannelMentions = false, allowOwnerDeleteMessages = false,allowTeamMentions=true,allowUserDeleteMessages=true, allowUserEditMessages=false };
@@ -188,8 +186,6 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
         }
 
 
-
-
         public async Task AddMember(string teamId, Member member, string accessToken)
         {
             string endpoint = ServiceHelper.GraphRootUri + $"users/{member.upn}";
@@ -200,12 +196,10 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
 
             String userId = responseBody.Deserialize<Member>().id;
 
-
-            string payload = $"{{ '@odata.id': '{ServiceHelper.GraphRootUri}/users/{userId}' }}";
+            string payload = $"{{ '@odata.id': '{ServiceHelper.GraphRootUri}users/{userId}' }}";
             endpoint = ServiceHelper.GraphRootUri + $"/groups/{teamId}/members/$ref";
 
             HttpResponseMessage responseRef = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, payload);
-
 
             if (member.owner)
             {
@@ -214,9 +208,5 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             }
 
         }
-
-
-
-
     }
 }
