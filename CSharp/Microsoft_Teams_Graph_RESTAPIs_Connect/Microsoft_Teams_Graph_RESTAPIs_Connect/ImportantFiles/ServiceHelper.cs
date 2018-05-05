@@ -54,10 +54,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
                 return ConfigurationManager.AppSettings["ida:GraphScopes"];
             }
         }
-
-
-
-
+        
 
         public static async Task<HttpResponseMessage> SendRequest(HttpMethod method, String endPoint, string accessToken, dynamic content = null)
         {

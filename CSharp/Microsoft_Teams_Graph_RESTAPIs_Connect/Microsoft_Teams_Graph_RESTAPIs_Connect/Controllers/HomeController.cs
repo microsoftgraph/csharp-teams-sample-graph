@@ -17,6 +17,8 @@ namespace GraphAPI.Web.Controllers
 {
     public class HomeController : Controller
     {
+        public static bool hasAppId = ServiceHelper.AppId != "Enter AppId of your application";
+
         readonly GraphService graphService ;
 
         public HomeController()

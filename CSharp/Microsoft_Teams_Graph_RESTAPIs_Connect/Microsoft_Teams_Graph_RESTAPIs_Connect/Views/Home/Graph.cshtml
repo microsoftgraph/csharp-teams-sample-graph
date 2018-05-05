@@ -7,6 +7,12 @@
 @model Microsoft_Teams_Graph_RESTAPIs_Connect.Models.ResultsViewModel
 <h1>@ViewBag.Title</h1>
 <h3>Choose operation:</h3>
+
+@if (!GraphAPI.Web.Controllers.HomeController.hasAppId)
+{
+    <div style="color: red; font-size: 30pt" >You need to register this application and provide an app secret, see README.md for details.</div>
+}
+
 <div class="col-md-offset-1">
     @Html.ActionLink("Get My Teams", "GetMyTeamsLoad", "Home")<br />
     @Html.ActionLink("Get Channels", "GetChannelsLoad", "Home")<br />
