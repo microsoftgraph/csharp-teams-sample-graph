@@ -197,13 +197,13 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             String userId = responseBody.Deserialize<Member>().id;
 
             string payload = $"{{ '@odata.id': '{ServiceHelper.GraphRootUri}users/{userId}' }}";
-            endpoint = ServiceHelper.GraphRootUri + $"/groups/{teamId}/members/$ref";
+            endpoint = ServiceHelper.GraphRootUri + $"groups/{teamId}/members/$ref";
 
             HttpResponseMessage responseRef = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, payload);
 
             if (member.owner)
             {
-                endpoint = ServiceHelper.GraphRootUri + $"/groups/{teamId}/owners/$ref";
+                endpoint = ServiceHelper.GraphRootUri + $"groups/{teamId}/owners/$ref";
                 HttpResponseMessage responseOwner = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, payload);
             }
 

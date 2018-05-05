@@ -318,7 +318,7 @@ namespace GraphAPI.Web.Controllers
         {
             try
             {
-                string teamId = "";
+                string teamId = member.teamId;
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
                 await graphService.AddMember(teamId, member, accessToken);
                 return "Success";
