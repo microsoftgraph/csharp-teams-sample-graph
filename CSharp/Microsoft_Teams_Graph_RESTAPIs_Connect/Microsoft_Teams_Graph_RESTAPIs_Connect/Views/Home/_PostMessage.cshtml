@@ -6,7 +6,7 @@
 {
     <h3>@Resource.TeamsGraph_PostMessage_Heading</h3>
 }
-@using (Html.BeginForm("PostMessage", "Home"))
+@using (Ajax.BeginForm("PostMessage", "Home", new AjaxOptions {OnComplete="onSuccess", UpdateTargetId="Result" }))
 {
     <div class="col-sm-12">
         <div class="form-group">
@@ -39,6 +39,7 @@
         </div>
     </div>
 }
-<div class="col-sm-12">
-    <p class="@(ViewBag.PostMessage == null ? "hidden" : null)"><h4><b>@Html.Raw(ViewBag.PostMessage)</b></h4></p>
+<div id="Result">
+
+    @*<p class="@(ViewBag.PostMessage == null ? "hidden" : null)"><h4><b>@Html.Raw(ViewBag.PostMessage)</b></h4></p>*@
 </div>

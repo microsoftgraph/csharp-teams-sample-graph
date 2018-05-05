@@ -42,10 +42,44 @@ namespace GraphAPI.Web.Controllers
         public async Task<ActionResult> GetChannelsLoad()
         {
             await GetMyId();
-
+            
             ViewBag.GetChannelsLoad = "Enable";
             return View("Graph");
         }
+
+        [Authorize]
+        public async Task<ActionResult> GetGroupLoad()
+        {
+            await GetMyId();
+            ViewBag.GetGroupLoad = "Enable";
+            return View("Graph");
+        }
+
+        [Authorize]
+        public async Task<ActionResult> GetTeamLoadCreate()
+        {
+            await GetMyId();
+            ViewBag.GetTeamLoadCreate = "Enable";
+            return View("Graph");
+        }
+
+        [Authorize]
+        public async Task<ActionResult> GetTeamLoadUpdate()
+        {
+            await GetMyId();
+            ViewBag.GetTeamLoadUpdate = "Enable";
+            return View("Graph");
+        }
+
+
+        // [Authorize]
+        public async Task<ActionResult> GetMemberLoad()
+        {
+            await GetMyId();
+            ViewBag.GetMemberLoad = "Enable";
+            return View("Graph");
+        }
+
 
         [Authorize]
         public async Task<ActionResult> CreateChannelLoad()
@@ -53,7 +87,7 @@ namespace GraphAPI.Web.Controllers
             await GetMyId();
 
             ViewBag.CreateChannelLoad = "Enable";
-            return PartialView("_CreateChannel");
+            return View("Graph");
         }
 
         [Authorize]
@@ -178,6 +212,54 @@ namespace GraphAPI.Web.Controllers
             }
         }
 
+        [Authorize]
+        public async Task<ActionResult> CreateTeam()
+        {
+            try
+            {
+                string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
+                string teamId = Request.Form["team-id"];
+
+                String response = await graphService.CreateTeam(teamId, accessToken);
+                    
+                if (response != null )
+                    ViewBag.CreateTeamMessage = "Successfully created/updated a team";
+                else
+                    ViewBag.CreateTeamMessage = "Fail";
+
+                return Content(ViewBag.CreateTeamMessage);
+            }
+            catch (Exception e)
+            {
+                if (e.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                return RedirectToAction("Index", "Error", new { message = Resource.Error_Message + Request.RawUrl + ": " + e.Message });
+            }
+        }
+
+        public async Task<ActionResult> UpdateTeam()
+        {
+            try
+            {
+                string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
+                string teamId = Request.Form["team-id"];
+
+                String response = await graphService.UpdateTeam(teamId, accessToken);
+
+                if (response != null)
+                    ViewBag.CreateTeamMessage = "Successfully updated a team";
+                else
+                    ViewBag.CreateTeamMessage = "Fail";
+
+                return Content(ViewBag.CreateTeamMessage);
+            }
+            catch (Exception e)
+            {
+                if (e.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                return RedirectToAction("Index", "Error", new { message = Resource.Error_Message + Request.RawUrl + ": " + e.Message });
+            }
+        }
+
+
         /// <summary>
         /// Start a new chat thread in channel
         /// </summary>
@@ -210,6 +292,41 @@ namespace GraphAPI.Web.Controllers
                 return RedirectToAction("Index", "Error", new { message = Resource.Error_Message + Request.RawUrl + ": " + e.Message });
             }
         }
+
+        [Authorize]
+        public async Task<String> CreateGroup(Group group)
+        {
+            try
+            {
+                string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
+                String id = await graphService.CreateNewGroup(accessToken, group);
+                return id;
+            }
+            catch (Exception e)
+            {
+                if (e.Message == Resource.Error_AuthChallengeNeeded)
+                    return "Fail";
+                return e.Message;
+            }
+        }
+
+        [Authorize]
+        public async Task<String> CreateMember(Member member)
+        {
+            try
+            {
+                string teamId = "";
+                string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
+                await graphService.AddMember(teamId, member, accessToken);
+                return "Success";
+            }
+            catch (Exception e)
+            {
+
+                return e.Message;
+            }
+        }
+
 
         public ActionResult About()
         {

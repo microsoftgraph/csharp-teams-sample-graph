@@ -69,5 +69,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Auth
                 throw new Exception(Resource.Error_AuthChallengeNeeded);
             }
         }
+
+       
     }
 }

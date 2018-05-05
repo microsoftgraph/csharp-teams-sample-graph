@@ -1,0 +1,38 @@
+﻿@using Resources;
+@model Microsoft_Teams_Graph_RESTAPIs_Connect.Models.Member
+
+
+@if (ViewBag.GetMemberLoad != null)
+{
+    <h3>@Resource.TeamsGraph_CreateMember_Heading</h3>
+}
+
+
+@using (Ajax.BeginForm("CreateMember", "home", new AjaxOptions() { OnSuccess = "success", UpdateTargetId = "Result" }))
+{
+    if (ViewBag.GetMemberLoad != null)
+    {
+        <div class="col-sm-12">
+            <div class="row form-group">
+                <label for="displayName">Email</label>
+                <input name="upn" id="upn" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="row form-group">
+                <label for="mailNickname">Owner</label>
+                <input style="margin-left:10px" name="owner" id="owner" type="checkbox"  />
+            </div>
+        </div>
+
+
+        <div class="col-sm-12">
+            <div class="row form-group">
+                <button type="submit" class="btn btn-default @(ViewBag.UserId == null ? "disabled" : null)">Create Member</button>
+                <input type="hidden" id="UserId" name="user-id" value=@ViewBag.UserId />
+            </div>
+        </div>
+    }
+}
+
+

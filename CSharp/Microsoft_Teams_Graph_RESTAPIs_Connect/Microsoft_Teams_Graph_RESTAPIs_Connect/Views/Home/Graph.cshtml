@@ -12,62 +12,30 @@
     @Html.ActionLink("Get Channels", "GetChannelsLoad", "Home")<br />
     @Html.ActionLink("Create Channel", "CreateChannelLoad", "Home")<br />
     @Html.ActionLink("Post Message", "PostMessageLoad", "Home")<br />
+
+    @Html.ActionLink("Create Group", "GetGroupLoad", "Home")<br />
+    @Html.ActionLink("Add Member", "GetMemberLoad", "Home")<br />
+    @Html.ActionLink("Create Team", "GetTeamLoadCreate", "Home")<br />
+    @Html.ActionLink("Update Team", "GetTeamLoadUpdate", "Home")<br />
 </div>
-@if (ViewBag.GetMyTeamsLoad != null)
-{
-    <h3>@Resource.TeamsGraph_GetMyTeams_Heading</h3>
-}
+<hr />
+@Html.Partial("_Team")
+@Html.Partial("_Channels")
+@Html.Partial("_CreateChannel")
+@Html.Partial("_PostMessage")
 
+@Html.Partial("_Group")
+@Html.Partial("_Member")
+@Html.Partial("_CreateUpdateTeam")
 
-  @*MVC Ajax Call*@
-@using (Ajax.BeginForm("GetMyTeams", "Home", new AjaxOptions() { HttpMethod = "Post", UpdateTargetId = "MyTeamResult", OnComplete = "grapchClient.onSuccess" }))
-{
-    <div class="col-sm-12">
-        <div class="form-group">
-            @if (ViewBag.GetMyTeamsLoad != null)
-            {
-                <button type="submit" class="btn btn-default @(ViewBag.UserId == null ? "disabled" : null)">@Resource.TeamsGraph_GetMyTeams_Button</button>
-                <input type="hidden" name="user-id" value=@ViewBag.UserId />
-            }
-        </div>
-    </div>
-}
-
-<div id="MyTeamResult" style="display:none">
-</div>
-
-
-
-
-
-
-
-@if (ViewBag.GetChannelsLoad != null)
-{
-    <h3>@Resource.TeamsGraph_GetChannels_Heading</h3>
-}
-
-    <div class="col-sm-12">
-        <div class="form-group">
-            @if (ViewBag.GetChannelsLoad != null)
-            {
-                <label for="team-id">@Resource.TeamsGraph_Team_Id_Label</label>
-                <input name="team-id" type="text" class="form-control" value="@ViewBag.TeamId" @(ViewBag.UserId == null ? "disabled" : null) />
-            }
-        </div>
-        <div class="form-group">
-            @if (ViewBag.GetChannelsLoad != null)
-            {
-                <button onclick="grapchClient.getChannels()" class="btn btn-default @(ViewBag.UserId == null ? "disabled" : null)">@Resource.TeamsGraph_GetChannels_Button</button>
-                <input type="hidden" name="user-id" value=@ViewBag.UserId />
-            }
-        </div>
-    </div>
-
-<div id="ChannelsResult">
-
-</div>
 
 @Html.Partial("_ResultsPartial")
 
-<script src="~/Scripts/Graph.js"></script>
+<script>
+
+    function onSuccess(result) {
+        $('#Result').html(result);
+        $('#Result').show();
+    }
+
+</script>
