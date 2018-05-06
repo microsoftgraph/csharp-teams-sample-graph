@@ -146,7 +146,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, group);
             if (response != null && response.IsSuccessStatusCode)
             {
-                return Resource.TeamsGraph_CreateChannel_Success_Result;
+                return Resource.TeamsGraph_CreateGroup_Success_Result;
             }
 
             string responseBody = await response.Content.ReadAsStringAsync(); ;
