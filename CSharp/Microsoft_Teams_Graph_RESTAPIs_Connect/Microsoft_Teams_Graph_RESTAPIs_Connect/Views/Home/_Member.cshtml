@@ -8,14 +8,14 @@
 }
 
 
-@using (Ajax.BeginForm("CreateMember", "home", new AjaxOptions() { OnSuccess = "success", UpdateTargetId = "Result" }))
+@using (Ajax.BeginForm("AddMember", "home", new AjaxOptions() { OnSuccess = "success", UpdateTargetId = "Result" }))
 {
     if (ViewBag.GetMemberLoad != null)
     {
         <div class="col-sm-12">
             <div class="row form-group">
-                <label for="teamId">Group id</label>
-                <input name="teamId" id="teamId" type="text" class="form-control" />
+                <label for="groupId">Group id</label>
+                <input name="groupId" id="groupId" type="text" class="form-control" />
             </div>
         </div>
 

@@ -59,10 +59,10 @@ namespace GraphAPI.Web.Controllers
         }
 
         [Authorize]
-        public async Task<ActionResult> GetTeamLoadCreate()
+        public async Task<ActionResult> GetAddTeamToGroupLoad()
         {
             await GetMyId();
-            ViewBag.GetTeamLoadCreate = "Enable";
+            ViewBag.GetAddTeamToGroupLoad = "Enable";
             return View("Graph");
         }
 
@@ -165,11 +165,11 @@ namespace GraphAPI.Web.Controllers
             try
             {
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                results.Items = await graphService.GetChannels(accessToken, Request.Form["team-id"], Resource.Prop_ID);
+                results.Items = await graphService.GetChannels(accessToken, Request.Form["group-id"], Resource.Prop_ID);
 
                 // Reset the status to display when the page reloads.
                 ViewBag.UserId = Request.Form["user-id"];
-                ViewBag.TeamId = Request.Form["team-id"];
+                ViewBag.GroupId = Request.Form["group-id"];
                 ViewBag.GetChannelsLoad = "Enable";
                 ViewBag.GetChannelsResult = "Enable";
 
@@ -193,7 +193,7 @@ namespace GraphAPI.Web.Controllers
             {
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
                 HttpResponseMessage response = await graphService.CreateChannel(accessToken,
-                    Request.Form["team-id"], Request.Form["channel-name"], Request.Form["channel-description"]);
+                    Request.Form["group-id"], Request.Form["channel-name"], Request.Form["channel-description"]);
                 if (response != null && response.IsSuccessStatusCode)
                     ViewBag.CreateChannelMessage = Resource.TeamsGraph_CreateGroup_Success_Result;
                 else
@@ -201,7 +201,7 @@ namespace GraphAPI.Web.Controllers
 
                 // Reset the status to display when the page reloads.
                 ViewBag.UserId = Request.Form["user-id"];
-                ViewBag.TeamId = Request.Form["team-id"];
+                ViewBag.GroupId = Request.Form["group-id"];
                 ViewBag.ChannelName = Request.Form["channel-name"];
                 ViewBag.ChannelDescription = Request.Form["channel-description"];
                 ViewBag.CreateChannelLoad = "Enable";
@@ -216,14 +216,14 @@ namespace GraphAPI.Web.Controllers
         }
 
         [Authorize]
-        public async Task<ActionResult> CreateTeam()
+        public async Task<ActionResult> AddTeamToGroup()
         {
             try
             {
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                string teamId = Request.Form["team-id"];
+                string groupId = Request.Form["group-id"];
 
-                String response = await graphService.CreateTeam(teamId, accessToken);
+                String response = await graphService.AddTeamToGroup(groupId, accessToken);
                     
                 if (response != null )
                     ViewBag.CreateTeamMessage = "Successfully created/updated a team";
@@ -244,9 +244,9 @@ namespace GraphAPI.Web.Controllers
             try
             {
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                string teamId = Request.Form["team-id"];
+                string groupId = Request.Form["group-id"];
 
-                String response = await graphService.UpdateTeam(teamId, accessToken);
+                String response = await graphService.UpdateTeam(groupId, accessToken);
 
                 if (response != null)
                     ViewBag.CreateTeamMessage = "Successfully updated a team";
@@ -274,7 +274,7 @@ namespace GraphAPI.Web.Controllers
             {
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
                 HttpResponseMessage response = await graphService.PostMessage(accessToken,
-                    Request.Form["team-id"], Request.Form["channel-id"], Request.Form["message"]);
+                    Request.Form["group-id"], Request.Form["channel-id"], Request.Form["message"]);
 
                 if (response != null && response.IsSuccessStatusCode)
                     ViewBag.PostMessage = Resource.TeamsGraph_PostMessage_Success_Result;
@@ -283,7 +283,7 @@ namespace GraphAPI.Web.Controllers
 
                 // Reset the status to display when the page reloads.
                 ViewBag.UserId = Request.Form["user-id"];
-                ViewBag.TeamId = Request.Form["team-id"];
+                ViewBag.groupId = Request.Form["group-id"];
                 ViewBag.ChannelId = Request.Form["channel-id"];
                 ViewBag.PostMessageLoad = "Enable";
 
@@ -297,13 +297,13 @@ namespace GraphAPI.Web.Controllers
         }
 
         [Authorize]
-        public async Task<String> CreateGroup(Group group)
+        public async Task<String> CreateNewTeamAndGroup(Group group)
         {
             try
             {
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                String id = await graphService.CreateNewGroup(accessToken, group);
-                return id;
+                String message = await graphService.CreateNewTeamAndGroup(accessToken, group);
+                return message;
             }
             catch (Exception e)
             {
@@ -314,13 +314,13 @@ namespace GraphAPI.Web.Controllers
         }
 
         [Authorize]
-        public async Task<String> CreateMember(Member member)
+        public async Task<String> AddMember(Member member)
         {
             try
             {
-                string teamId = member.teamId;
+                string groupId = member.groupId;
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                await graphService.AddMember(teamId, member, accessToken);
+                await graphService.AddMember(groupId, member, accessToken);
                 return "Success";
             }
             catch (Exception e)

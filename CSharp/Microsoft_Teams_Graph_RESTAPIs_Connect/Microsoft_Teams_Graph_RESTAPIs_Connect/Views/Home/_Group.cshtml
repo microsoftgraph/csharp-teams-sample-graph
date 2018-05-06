@@ -8,7 +8,7 @@
 }
 
 
-@using (Ajax.BeginForm("CreateGroup", "home", new AjaxOptions() { OnSuccess = "success", UpdateTargetId = "Result" }))
+@using (Ajax.BeginForm("CreateNewTeamAndGroup", "home", new AjaxOptions() { OnSuccess = "success", UpdateTargetId = "Result" }))
 {
     if (ViewBag.GetGroupLoad != null)
     {
