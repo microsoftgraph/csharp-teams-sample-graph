@@ -202,7 +202,7 @@
     <comment>Heading for 'Add Member" section in Graph view</comment>
   </data>
   <data name="TeamsGraph_CreateTeam_Heading" xml:space="preserve">
-    <value>Create Team</value>
+    <value>Add Team to Group</value>
     <comment>Heading for 'create team' section in Graph View</comment>
   </data>
   <data name="TeamsGraph_GetChannels_Button" xml:space="preserve">

@@ -250,7 +250,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create Team.
+        ///   Looks up a localized string similar to Add Team to Group.
         /// </summary>
         internal static string TeamsGraph_CreateTeam_Heading {
             get {
