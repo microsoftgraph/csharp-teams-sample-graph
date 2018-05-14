@@ -189,6 +189,22 @@
     <value>Success! New channel is created.</value>
     <comment>Success message for 'create channel' section in Graph view</comment>
   </data>
+  <data name="TeamsGraph_CreateGroup_Success_Result" xml:space="preserve">
+    <value>Success! New group is created.</value>
+    <comment>Success message for 'create group' section in Graph view</comment>
+  </data>
+  <data name="TeamsGraph_CreateGroup_Heading" xml:space="preserve">
+    <value>Create Group</value>
+    <comment>Heading for 'create Group' section in Graph view</comment>
+  </data>
+  <data name="TeamsGraph_CreateMember_Heading" xml:space="preserve">
+    <value>Add Member</value>
+    <comment>Heading for 'Add Member" section in Graph view</comment>
+  </data>
+  <data name="TeamsGraph_CreateTeam_Heading" xml:space="preserve">
+    <value>Add Team to Group</value>
+    <comment>Heading for 'create team' section in Graph View</comment>
+  </data>
   <data name="TeamsGraph_GetChannels_Button" xml:space="preserve">
     <value>Get</value>
     <comment>Button text for 'get channels' section in Graph view</comment>
@@ -236,5 +252,9 @@
   <data name="TeamsGraph_Team_Id_Label" xml:space="preserve">
     <value>Enter Team Id</value>
     <comment>Label for team ID input</comment>
+  </data>
+  <data name="TeamsGraph_UpdateTeam_Heading" xml:space="preserve">
+    <value>Update Team</value>
+    <comment>Heading for 'Update team' section in Graph View</comment>
   </data>
 </root>

@@ -9,5 +9,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Auth
     public interface IAuthProvider
     {
         Task<string> GetUserAccessTokenAsync();
+
+
     }
 }

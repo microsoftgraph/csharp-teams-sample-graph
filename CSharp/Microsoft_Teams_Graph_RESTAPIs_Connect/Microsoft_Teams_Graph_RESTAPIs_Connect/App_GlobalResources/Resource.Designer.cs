@@ -19,7 +19,7 @@ namespace Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option or rebuild the Visual Studio project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Web.Application.StronglyTypedResourceProxyBuilder", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Web.Application.StronglyTypedResourceProxyBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resource {
@@ -223,6 +223,42 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create Group.
+        /// </summary>
+        internal static string TeamsGraph_CreateGroup_Heading {
+            get {
+                return ResourceManager.GetString("TeamsGraph_CreateGroup_Heading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Success! New group is created..
+        /// </summary>
+        internal static string TeamsGraph_CreateGroup_Success_Result {
+            get {
+                return ResourceManager.GetString("TeamsGraph_CreateGroup_Success_Result", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Member.
+        /// </summary>
+        internal static string TeamsGraph_CreateMember_Heading {
+            get {
+                return ResourceManager.GetString("TeamsGraph_CreateMember_Heading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Team to Group.
+        /// </summary>
+        internal static string TeamsGraph_CreateTeam_Heading {
+            get {
+                return ResourceManager.GetString("TeamsGraph_CreateTeam_Heading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Get.
         /// </summary>
         internal static string TeamsGraph_GetChannels_Button {
@@ -327,6 +363,15 @@ namespace Resources {
         internal static string TeamsGraph_Team_Id_Label {
             get {
                 return ResourceManager.GetString("TeamsGraph_Team_Id_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Team.
+        /// </summary>
+        internal static string TeamsGraph_UpdateTeam_Heading {
+            get {
+                return ResourceManager.GetString("TeamsGraph_UpdateTeam_Heading", resourceCulture);
             }
         }
     }
