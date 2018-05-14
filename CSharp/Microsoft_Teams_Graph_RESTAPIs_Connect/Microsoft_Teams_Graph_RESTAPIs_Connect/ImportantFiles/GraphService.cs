@@ -37,12 +37,12 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
 
             Channel content = new Channel()
             {
-                Description = channelDescription,
-                Name = channelName
+                description = channelDescription,
+                displayName = channelName
             };
 
             HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, content);
-
+            string responseBody = await response.Content.ReadAsStringAsync();
             return response;//.ReasonPhrase;
         }
 
@@ -164,7 +164,10 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             Team team = new Models.Team();
             team.TeamGuestSettings = new Models.TeamGuestSettings() { allowCreateUpdateChannels = false, allowDeleteChannels = false };
 
-            HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, team);
+            HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Put, endpoint, accessToken, team);
+            string responseBody = await response.Content.ReadAsStringAsync(); ;
+            string teamId = responseBody.Deserialize<Group>().id;
+            await UpdateTeam(teamId, accessToken);
             if (!response.IsSuccessStatusCode)
                 throw new Exception(response.ReasonPhrase);
             return response.ReasonPhrase;
@@ -175,15 +178,18 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
         {
             string endpoint = ServiceHelper.GraphRootUri + "groups/" + groupId + "/team";
             Team team = new Models.Team();
-            team.TeamGuestSettings = new Models.TeamGuestSettings() { allowCreateUpdateChannels = false, allowDeleteChannels = false };
+            //team.TeamGuestSettings = new Models.TeamGuestSettings() { allowCreateUpdateChannels = false, allowDeleteChannels = false };
 
             team.memberSettings = new Models.TeamMemberSettings() { allowCreateUpdateChannels = false, allowDeleteChannels = false,allowAddRemoveApps=true, allowCreateUpdateRemoveConnectors=false, allowCreateUpdateRemoveTabs=true };
             team.messagingSettings = new Models.TeamMessagingSettings() { allowChannelMentions = false, allowOwnerDeleteMessages = false,allowTeamMentions=true,allowUserDeleteMessages=true, allowUserEditMessages=false };
             team.funSettings = new Models.TeamFunSettings() { giphyContentRating = "strict", allowGiphy = true };
 
-            HttpResponseMessage response = await ServiceHelper.SendRequest(new HttpMethod("Patch"), endpoint, accessToken, team);
+            HttpResponseMessage response = await ServiceHelper.SendRequest(new HttpMethod("PATCH"), endpoint, accessToken, team);
+            string resBody = await response.Content.ReadAsStringAsync();
+
             if (!response.IsSuccessStatusCode)
                 throw new Exception(response.ReasonPhrase);
+            
             return response.ReasonPhrase;
         }
 
@@ -202,15 +208,16 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
 
 
             string payload = $"{{ '@odata.id': '{ServiceHelper.GraphRootUri}/users/{userId}' }}";
-            endpoint = ServiceHelper.GraphRootUri + $"/groups/{teamId}/members/$ref";
+            endpoint = ServiceHelper.GraphRootUri + $"groups/{teamId}/members/$ref";
 
             HttpResponseMessage responseRef = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, payload);
-
+            string respBody = await response.Content.ReadAsStringAsync();
 
             if (member.owner)
             {
-                endpoint = ServiceHelper.GraphRootUri + $"/groups/{teamId}/owners/$ref";
+                endpoint = ServiceHelper.GraphRootUri + $"groups/{teamId}/owners/$ref";
                 HttpResponseMessage responseOwner = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, payload);
+                string _respBody = await response.Content.ReadAsStringAsync();
             }
 
         }

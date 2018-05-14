@@ -1,5 +1,5 @@
 ﻿@using Resources;
-@model Microsoft_Teams_Graph_RESTAPIs_Connect.Models.Member
+
 
 
 @if (ViewBag.GetMemberLoad != null)
@@ -14,6 +14,12 @@
     {
         <div class="col-sm-12">
             <div class="row form-group">
+                <label for="displayName">Group ID</label>
+                <input name="teamId" id="teamId" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="row form-group">
                 <label for="displayName">Email</label>
                 <input name="upn" id="upn" type="text" class="form-control" />
             </div>
@@ -21,7 +27,7 @@
         <div class="col-sm-12">
             <div class="row form-group">
                 <label for="mailNickname">Owner</label>
-                <input style="margin-left:10px" name="owner" id="owner" type="checkbox"  />
+                <input style="margin-left:10px" name="owner" id="owner" type="checkbox" />
             </div>
         </div>
 

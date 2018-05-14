@@ -1,0 +1,17 @@
+{
+  "name": "graph-api_node",
+  "version": "0.0.0",
+  "description": "GraphAPI_Node",
+  "main": "server.js",
+  "author": {
+    "name": "v-ansah"
+  },
+  "dependencies": {
+    "fs-extra": "^2.1.2",
+    "node-rest-client": "^3.1.0",
+    "node-uuid": "^1.4.8",
+    "oauth": "^0.9.14",
+    "restify": "^4.3.0",
+    "restify-cookies": "^0.2.2"
+  }
+}

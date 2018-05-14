@@ -1,0 +1,408 @@
+﻿<html>
+
+<head>
+    <title>Sample app for Microsoft Teams APIs in Microsoft Graph</title>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+    <div class="row">
+        <div class="col-sm-4">
+            <h1>Microsoft Graph APIs</h1><br>
+            <ul>
+                <li><a href="javascript:void(0)" onclick="getTeams()">Get My Teams</a></li>
+                <li><a href="javascript:void(0)" onclick="showChannels()">Get Channels</a></li>
+                <li><a href="javascript:void(0)" onclick="createChannel()">Create Channel</a></li>
+                <li><a href="javascript:void(0)" onclick="postNewMessage()">Post Message</a></li>
+                <li><a href="javascript:void(0)" onclick="createNewGroup()">Create Group</a></li>
+                <li><a href="javascript:void(0)" onclick="createNewUser()">Add User</a></li>
+                <li><a href="javascript:void(0)" onclick="createNewTeam()">Create Team</a></li>
+                <li><a href="javascript:void(0)" onclick="updateTeam()">Update Team</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-4">
+            <div id="teamheader" class="container">
+                <h2>Choose team:</h2>
+                <div id="teams" class="container"></div>
+            </div>
+            <div id="channelheader" class="container">
+                <h2>Get channels:</h2>
+                <lable>Group Id:</lable>
+                <input type="text" id="grpIdChannel" />
+                <input type="button" value="Get Channels" onclick="getChannels();" />
+                <div id="channels" class="container"></div>
+            </div>
+            <div id="channelCreate" class="container">
+                <h2>Create channels:</h2>
+                <div class="row">
+                    <input type="text" placeholder="Group Id" id="grpIdChannel" />
+                </div>
+                <div class="row">
+                    <input type="text" placeholder="Channel Name" id="ChannelName" />
+                </div>
+                <div class="row">
+                    <input type="text" placeholder="Description" id="ChannelDesc" />
+                </div>
+                <div class="row">
+                    <input type="button" value="Get Channels" onclick="CreateNewChannel();" />
+                </div>
+                <div class="row">
+                    <div id="channelsuccess" class="container"></div>
+                </div>
+            </div>
+
+            <div id="sendmessageheader" class="container">
+                <h2>Send message:</h2>
+                <div id="sendmessages" class="container">
+                    <div class="row">
+                        <input type="text" placeholder="Group Id" id="grpIdPost" />
+                    </div>
+                    <div class="row">
+                        <input type="text" placeholder="Channel Id" id="channelIdPost" />
+
+                    </div>
+                    <div class="row form-group">
+                        <textarea class="form-control" rows="5" id="message"></textarea>
+                    </div>
+                    <div class="row">
+                        <button type="button" onclick="postMessage()" class="btn btn-default" id="sendmessagebutton">Send</button>
+                    </div>
+
+                </div>
+
+                <div id="sentsuccessfully" class="alert alert-success">Sent successfully!</div>
+            </div>
+
+            <div id="GroupHeader">
+                <h2>Create Group</h2>
+                <div class="row">
+                    <input placeholder="Display Name" id="grpNewDisplayName" />
+                </div>
+                <div class="row">
+                    <input placeholder="Nick Name" id="grpNewNickName" />
+                </div>
+                <div class="row">
+                    <input placeholder="Description" id="grpNewDesc" />
+                </div>
+                <div>
+                    <input type="button" value="Create" onclick="createGroup()" />
+                </div>
+
+            </div>
+
+            <div id="UserHeader">
+                <h2>Add Member</h2>
+                <div class="row">
+                    <input placeholder="Group Id" id="grpNewMember" />
+                </div>
+                <div class="row">
+                    <input placeholder="UPN" id="grpNewUPN" />
+                </div>
+                <div>
+                    <input type="button" value="Create" onclick="createUser()" />
+                </div>
+
+            </div>
+            <div id="TeamHeader">
+                <h2>Create Team</h2>
+                <div class="row">
+                    <input placeholder="Group Id" id="grpNewTeam" />
+                </div>
+                <div>
+                    <input type="button" value="Create" onclick="createTeam()" />
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $("#teamheader").hide();
+        $('#channelheader').hide();
+        $('#sendmessageheader').hide();
+        $('#sentsuccessfully').hide();
+        $('#channelCreate').hide();
+        $('#GroupHeader').hide();
+        $('#UserHeader').hide();
+        $('#TeamHeader').hide();
+
+        var host = `http://${window.location.hostname}`;
+
+        var port = window.location.port;
+        if (port) { host += ':' + port }
+
+
+
+        function getTeams() {
+            $("#teamheader").show();
+            $('#channelheader').hide();
+            $('#sendmessageheader').hide();
+            $('#sentsuccessfully').hide();
+            $('#channelCreate').hide();
+            $('#GroupHeader').hide();
+            $('#UserHeader').hide();
+            $('#TeamHeader').hide();
+
+            $.get(host + "/graph/beta/me/joinedTeams", function (groupData) {
+                var html = "<ul class=\"list-group\">";
+                for (var j = 0; j < groupData.value.length; j++) {
+                    html += "<li class=\"list-group-item team\" id=\"" + groupData.value[j].id + "\">" + groupData.value[j].displayName + "</li>";
+                }
+                html += "</ul>";
+                $("#teams").html(html);
+            });
+
+        }
+
+        function showChannels() {
+            $("#teamheader").hide();
+
+            $('#sendmessageheader').hide();
+            $('#sentsuccessfully').hide();
+            $('#channelCreate').hide();
+            $('#channelheader').show();
+        }
+
+        function getChannels() {
+            //$('.team').removeClass('active');
+            //$(this).addClass('active');
+            var teamId = $('#grpIdChannel').val();
+            $('#channelheader').show();
+
+            $.get(host + '/graph/beta/groups/' + teamId + '/channels', function (channelData) {
+                var html = '<ul class="list-group">';
+                for (var k = 0; k < channelData.value.length; k++) {
+                    html += '<li class="list-group-item channel" id="' + channelData.value[k].id + '">' + channelData.value[k].displayName + '</li>';
+                }
+                html += '</ul>';
+                $('#channels').html(html);
+            });
+        }
+
+        function postNewMessage() {
+            $("#teamheader").hide();
+            $('#channelheader').hide();
+            $('#sendmessageheader').show();
+            $('#sentsuccessfully').hide();
+            $('#channelCreate').hide();
+        }
+
+
+        function postMessage() {
+            var teamId = $('#grpIdPost').val();
+            var channelId = $('#channelIdPost').val();
+
+            var message = $('#message').val();
+            var data = {
+                "rootMessage": {
+                    "body": {
+                        "contentType": 1,
+                        "content": message
+                    }
+                }
+            };
+            $.ajax({
+                type: "POST",
+                url: `${host}/graph/beta/groups/${teamId}/channels/${channelId}/chatThreads`,
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                processData: false
+            }).done(function () {
+                $('#sentsuccessfully').show();
+            });
+        }
+
+        function createNewUser() {
+            $("#teamheader").hide();
+            $('#channelheader').hide();
+            $('#sendmessageheader').hide();
+            $('#sentsuccessfully').hide();
+            $('#channelCreate').hide();
+            $('#GroupHeader').hide();
+            $('#UserHeader').show();
+
+        }
+
+        function createUser() {
+            var teamId = $('#grpNewMember').val();
+            var upn = $('#grpNewUPN').val();
+          
+
+            $.get(host + '/api/getuser?upn=' + upn, function (data) {
+                var userId = data.id;
+
+                var payload = new Object();
+                payload["@odata.id"] = "https://graph.microsoft.com/beta/users/" + userId;
+
+                //var payload = '{ "@odata.id": "https://graph.microsoft.com/beta/users/' + userId + '" }';
+
+                $.ajax({
+                    type: "POST",
+                    url: `${host}/graph/beta/groups/${teamId}/members/$ref`,
+                    data: JSON.stringify(payload),
+                    contentType: "application/json",
+                    processData: false
+                }).done(function () {
+                    $('#sentsuccessfully').show();
+                });
+
+
+            });
+        }
+
+        function CreateNewChannel() {
+            var channel = new Object();
+            channel.displayName = $('#ChannelName').val();
+            channel.description = $('#ChannelDesc').val();
+            var teamId = $('#grpIdChannel').val();
+
+
+            $.ajax({
+                type: "POST",
+                url: `${host}/graph/beta/groups/${teamId}/team/channels`,
+                data: JSON.stringify(channel),
+                contentType: "application/json",
+                processData: false
+            }).done(function () {
+                $('#channelsuccess').html("Channel create Successfully");
+            });
+
+
+        }
+
+        function createChannel(teamId) {
+            $("#teamheader").hide();
+            $('#channelheader').hide();
+            $('#sendmessageheader').hide();
+            $('#sentsuccessfully').hide();
+            $('#channelCreate').show();
+
+
+        }
+
+        function createNewGroup()
+        {
+            $("#teamheader").hide();
+            $('#channelheader').hide();
+            $('#sendmessageheader').hide();
+            $('#sentsuccessfully').hide();
+            $('#channelCreate').hide();
+            $('#GroupHeader').show();
+        }
+
+        function createGroup(teamId) {
+
+            var group = new Object();
+            group.displayName = $('#grpNewDisplayName').val();
+            group.mailEnabled = true;
+
+            group.mailNickname = $('#grpNewNickName').val();
+            group.description = $('#grpNewDesc').val();
+            group.securityEnabled = false;
+            group.visibility = "Private";
+            group.groupTypes = ["Unified"];
+
+
+
+            $.ajax({
+                type: "POST",
+                url: `${host}/graph/beta/groups`,
+                data: JSON.stringify(group),
+                contentType: "application/json",
+                processData: false,
+                success: function (data) {
+                    createTeam(data.id);
+                }
+            }).done(function () {
+                $('#sentsuccessfully').show();
+            });
+
+
+        }
+
+        function createNewTeam(){
+            $("#teamheader").hide();
+            $('#channelheader').hide();
+            $('#sendmessageheader').hide();
+            $('#sentsuccessfully').hide();
+            $('#channelCreate').hide();
+            $('#GroupHeader').hide();
+            $('#UserHeader').hide();
+            $('#TeamHeader').show();
+        }
+
+
+        function createTeam(groupId) {
+            //  var groupId = $('#grpNewTeam').val();
+            var team = new Object();
+            var teamGuestSettings = new Object;
+
+            teamGuestSettings.allowCreateUpdateChannels = false;
+            teamGuestSettings.allowDeleteChannels = false;
+
+            team.TeamGuestSettings = teamGuestSettings;
+
+            $.ajax({
+                type: "PUT",
+                url: host + '/graph/beta/groups/' + groupId + '/team',
+                data: JSON.stringify(team),
+                contentType: "application/json",
+                processData: false,
+                success: function (data) {
+                    var result = data;
+                    updateTeam(groupId);
+                }
+            }).done(function () {
+                $('#sentsuccessfully').show();
+            });
+
+
+        }
+
+
+        function updateTeam(groupId) {
+            //  var groupId = $('#grpNewTeam').val();
+            var team = new Object();
+            var teamGuestSettings = new Object;
+            var teamMemberSettings = new Object;
+
+            teamMemberSettings.allowCreateUpdateChannels = false;
+            teamMemberSettings.allowDeleteChannels = false;
+            teamMemberSettings.allowAddRemoveApps = true;
+            teamMemberSettings.allowCreateUpdateRemoveConnectors = false;
+            teamMemberSettings.allowCreateUpdateRemoveTabs = true;
+
+
+
+            teamGuestSettings.allowCreateUpdateChannels = false;
+            teamGuestSettings.allowDeleteChannels = false;
+
+            team.TeamGuestSettings = teamGuestSettings;
+            team.memberSettings = teamMemberSettings;
+
+            $.ajax({
+                type: "PATCH",
+                url: host + '/graph/beta/groups/' + groupId + '/team',
+                data: JSON.stringify(team),
+                contentType: "application/json",
+                processData: false,
+                success: function (data) {
+                    var result = data;
+                }
+            }).done(function () {
+                $('#sentsuccessfully').show();
+            });
+
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

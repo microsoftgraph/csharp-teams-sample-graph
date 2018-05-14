@@ -15,6 +15,7 @@ using Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles;
 
 namespace GraphAPI.Web.Controllers
 {
+    
     public class HomeController : Controller
     {
         readonly GraphService graphService ;
@@ -72,7 +73,7 @@ namespace GraphAPI.Web.Controllers
         }
 
 
-        // [Authorize]
+        [Authorize]
         public async Task<ActionResult> GetMemberLoad()
         {
             await GetMyId();
@@ -315,7 +316,9 @@ namespace GraphAPI.Web.Controllers
         {
             try
             {
-                string teamId = "";
+                string val = Request.Form["owner"];
+                string teamId = member.teamId;
+                member.owner = (val == "on" ? true : false);
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
                 await graphService.AddMember(teamId, member, accessToken);
                 return "Success";
