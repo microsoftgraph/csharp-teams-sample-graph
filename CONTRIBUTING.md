@@ -22,6 +22,7 @@ In general we want our code comments to follow these guidelines:
 
 Sometimes we get a lot of issues, and it can be hard to keep up. If you have a solution to an open issue that hasn't been addressed, fix the issue and then submit a pull request.
 
+
 ### Add a new feature
 
 New features are great! Be sure to check with the repository admin first to be sure the feature will fit the intent of the sample. Start by opening an issue in the repository that proposes and describes the feature. The repository admin will respond and may ask for more information. If the admin agrees to the new feature, create the feature and submit a pull request.
