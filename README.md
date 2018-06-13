@@ -32,7 +32,7 @@ You'll need to register an app through the following process:
 7. Choose 'Web'.
 8. Make sure 'Allow Implicit Flow' check box is selected, and enter 'Redirect URI' e.g., http://localhost:55065/.  See appropriate sample for more information on the specific port.
    * The 'Allow Implicit Flow' option enables the hybrid flow. During authentication, this enables the app to receive both sign-in info (the id_token) and artifacts (in this case, an authorization code) that the app can use to obtain an access token.
-9. Under 'Microsoft Graph Permissions', Add 'Group.ReadWrite.All' and 'User.ReadWrite.All' as Delegated and Application Permissions.
+9. Under 'Microsoft Graph Permissions', Add 'Group.ReadWrite.All' (Read and write all groups) and 'User.ReadWrite.All' (Read and write all users' full profile) as Delegated and Application Permissions.
 10. Choose Save.
 
 See the individual project readmes for more information.
