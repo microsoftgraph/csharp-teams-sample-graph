@@ -242,8 +242,11 @@
     </Compile>
     <Compile Include="ImportantFiles\GraphService.cs" />
     <Compile Include="ImportantFiles\ServiceHelper.cs" />
+    <Compile Include="Models\TeamsApp.cs" />
+    <Compile Include="Models\Clone.cs" />
     <Compile Include="Models\Channel.cs" />
     <Compile Include="Models\Group.cs" />
+    <Compile Include="Models\AppList.cs" />
     <Compile Include="Models\Member.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\PostMessage.cs" />
@@ -325,6 +328,7 @@
     <Content Include="Views\Home\_Group.cshtml" />
     <Content Include="Views\Home\_Member.cshtml" />
     <Content Include="Views\Home\_CreateUpdateTeam.cshtml" />
+    <Content Include="Views\Home\_AppList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_GlobalResources\Resource.resx">

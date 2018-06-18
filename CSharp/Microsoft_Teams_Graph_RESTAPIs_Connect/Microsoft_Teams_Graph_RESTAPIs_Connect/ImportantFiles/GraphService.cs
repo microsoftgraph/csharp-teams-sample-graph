@@ -56,14 +56,12 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
         public async Task<IEnumerable<ResultsItem>> GetChannels(string accessToken, string teamId, string resourcePropId)
         {
             string endpoint = $"{GraphRootUri}/teams/{teamId}/channels";
-            string idPropertyName = "id";
-            string displayPropertyName = "displayName";
 
             List<ResultsItem> items = new List<ResultsItem>();
             HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Get, endpoint, accessToken);
             if (response != null && response.IsSuccessStatusCode)
             {
-                items = await ServiceHelper.GetResultsItem(response, idPropertyName, displayPropertyName, resourcePropId);
+                items = await ServiceHelper.GetResultsItem(response, "id", "displayName", resourcePropId);
 
             }
             return items;
@@ -96,14 +94,12 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
         public async Task<IEnumerable<ResultsItem>> GetMyTeams(string accessToken, string resourcePropId)
         {
             string endpoint = $"{GraphRootUri}/me/joinedTeams";
-            string idPropertyName = "id";
-            string displayPropertyName = "displayName";
 
             List<ResultsItem> items = new List<ResultsItem>();
             HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Get, endpoint, accessToken);
             if (response != null && response.IsSuccessStatusCode)
             {
-                items = await ServiceHelper.GetResultsItem(response, idPropertyName, displayPropertyName, resourcePropId);
+                items = await ServiceHelper.GetResultsItem(response, "id", "displayName", resourcePropId);
 
             }
             return items;
@@ -220,6 +216,22 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
             }
+        }
+
+        public async Task<IEnumerable<ResultsItem>> ListApps(string accessToken, string teamId, string resourcePropId)
+        {
+            HttpResponseMessage response = await ServiceHelper.SendRequest(
+                HttpMethod.Get, 
+                $"{GraphRootUri}/teams/{teamId}/apps",
+                accessToken);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            List<ResultsItem> items = new List<ResultsItem>();
+            if (response != null && response.IsSuccessStatusCode)
+            {
+                items = await ServiceHelper.GetResultsItem(response, "id", "displayName", resourcePropId);
+            }
+            return items;
         }
     }
 }

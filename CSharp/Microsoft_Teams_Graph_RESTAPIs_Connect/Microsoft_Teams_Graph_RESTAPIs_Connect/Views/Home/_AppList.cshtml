@@ -1,0 +1,29 @@
+﻿@using Resources;
+@model Microsoft_Teams_Graph_RESTAPIs_Connect.Models.ResultsViewModel
+
+
+@if (ViewBag.GetAppsLoad != null)
+{
+    <h3>List Apps in Team</h3>
+}
+
+
+@using (Ajax.BeginForm("ListApps", "home", new AjaxOptions() { OnSuccess = "success", UpdateTargetId = "Result" }))
+{
+    if (ViewBag.GetAppsLoad != null)
+    {
+        <div class="col-sm-12">
+            <div class="row form-group">
+                <label for="teamId">Team id</label>
+                <input name="teamId" id="teamId" type="text" class="form-control" />
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="row form-group">
+                <button type="submit" class="btn btn-default @(ViewBag.UserId == null ? "disabled" : null)">Get Apps</button>
+                <input type="hidden" id="UserId" name="user-id" value=@ViewBag.UserId />
+            </div>
+        </div>
+    }
+}

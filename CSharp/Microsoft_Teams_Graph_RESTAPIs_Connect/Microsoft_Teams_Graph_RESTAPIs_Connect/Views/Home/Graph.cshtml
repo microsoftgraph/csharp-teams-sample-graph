@@ -23,8 +23,12 @@
     @Html.ActionLink("Add Member", "GetMemberLoad", "Home")<br />
     @Html.ActionLink("Add Team to Group", "GetAddTeamToGroupLoad", "Home")<br />
     @Html.ActionLink("Update Team", "GetTeamLoadUpdate", "Home")<br />
+
+    @Html.ActionLink("Get Apps", "GetAppsLoad", "Home")<br />
 </div>
 <hr />
+@Html.Partial("_AppList")
+
 @Html.Partial("_Team")
 @Html.Partial("_Channels")
 @Html.Partial("_CreateChannel")
@@ -33,6 +37,7 @@
 @Html.Partial("_Group")
 @Html.Partial("_Member")
 @Html.Partial("_CreateUpdateTeam")
+
 
 @Html.Partial("_ResultsPartial")
 

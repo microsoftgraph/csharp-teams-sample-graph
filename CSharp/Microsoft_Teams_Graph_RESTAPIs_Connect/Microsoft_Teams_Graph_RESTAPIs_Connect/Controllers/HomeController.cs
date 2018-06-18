@@ -102,6 +102,17 @@ namespace GraphAPI.Web.Controllers
             return View("Graph");
         }
 
+        [Authorize]
+        public async Task<ActionResult> GetAppsLoad()
+        {
+            await GetMyId();
+
+            ViewBag.GetAppsLoad = "Enable";
+            return View("Graph");
+        }
+
+
+        
         /// <summary>
         /// Get the current user's id from their profile.
         /// </summary>
@@ -330,6 +341,31 @@ namespace GraphAPI.Web.Controllers
             }
         }
 
+
+        public async Task<ActionResult> ListApps()
+        {
+            ResultsViewModel results = new ResultsViewModel();
+
+            try
+            {
+                string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
+                results.Items = await graphService.ListApps(
+                    accessToken, Request.Form["teamId"], Resource.Prop_ID);
+
+                // Reset the status to display when the page reloads.
+                ViewBag.UserId = Request.Form["user-id"];
+                ViewBag.GroupId = Request.Form["group-id"];
+                ViewBag.GetAppsLoad = "Enable";
+                ViewBag.GetAppsLoadResult = "Enable";
+
+                return View("Graph", results);
+            }
+            catch (Exception e)
+            {
+                if (e.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                return RedirectToAction("Index", "Error", new { message = Resource.Error_Message + Request.RawUrl + ": " + e.Message });
+            }
+        }
 
         public ActionResult About()
         {
