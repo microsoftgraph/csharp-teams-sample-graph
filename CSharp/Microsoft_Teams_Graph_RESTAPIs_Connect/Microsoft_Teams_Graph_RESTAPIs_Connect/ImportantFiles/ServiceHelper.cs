@@ -15,14 +15,6 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
 {
     public class ServiceHelper
     {
-        public static string GraphRootUri
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["ida:GraphRootUri"];
-            }
-        }
-
         public static string RedirectUri
         {
             get

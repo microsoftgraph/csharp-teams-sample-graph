@@ -1,6 +1,4 @@
-﻿
-
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft_Teams_Graph_RESTAPIs_Connect.Models;
 using Newtonsoft.Json;
 using Resources;
+using System.Configuration;
 
 namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
 {
@@ -23,17 +22,19 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
 
     public class GraphService
     {
+        private static string GraphRootUri = ConfigurationManager.AppSettings["ida:GraphRootUri"];
+
         /// <summary>
         /// Create new channel.
         /// </summary>
         /// <param name="accessToken">Access token to validate user</param>
-        /// <param name="groupId">Id of the team in which new channel needs to be created</param>
+        /// <param name="teamId">Id of the team in which new channel needs to be created</param>
         /// <param name="channelName">New channel name</param>
         /// <param name="channelDescription">New channel description</param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> CreateChannel(string accessToken, string groupId, string channelName, string channelDescription)
+        public async Task<HttpResponseMessage> CreateChannel(string accessToken, string teamId, string channelName, string channelDescription)
         {
-            string endpoint = ServiceHelper.GraphRootUri + "groups/" + groupId + "/channels";
+            string endpoint = $"{GraphRootUri}/teams/{teamId}/channels";
 
             Channel content = new Channel()
             {
@@ -50,11 +51,11 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
         /// Get all channels of the given.
         /// </summary>
         /// <param name="accessToken">Access token to validate user</param>
-        /// <param name="groupId">Id of the team to get all associated channels</param>
+        /// <param name="teamId">Id of the team to get all associated channels</param>
         /// <returns></returns>
-        public async Task<IEnumerable<ResultsItem>> GetChannels(string accessToken, string groupId, string resourcePropId)
+        public async Task<IEnumerable<ResultsItem>> GetChannels(string accessToken, string teamId, string resourcePropId)
         {
-            string endpoint = ServiceHelper.GraphRootUri + "groups/" + groupId + "/channels";
+            string endpoint = $"{GraphRootUri}/teams/{teamId}/channels";
             string idPropertyName = "id";
             string displayPropertyName = "displayName";
 
@@ -94,8 +95,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
         /// <returns></returns>
         public async Task<IEnumerable<ResultsItem>> GetMyTeams(string accessToken, string resourcePropId)
         {
-
-            string endpoint = ServiceHelper.GraphRootUri + "me/joinedTeams";
+            string endpoint = $"{GraphRootUri}/me/joinedTeams";
             string idPropertyName = "id";
             string displayPropertyName = "displayName";
 
@@ -109,9 +109,9 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             return items;
         }
 
-        public async Task<HttpResponseMessage> PostMessage(string accessToken, string groupId, string channelId, string message)
+        public async Task<HttpResponseMessage> PostMessage(string accessToken, string teamId, string channelId, string message)
         {
-            string endpoint = ServiceHelper.GraphRootUri + "groups/" + groupId + "/channels/" + channelId + "/chatThreads";
+            string endpoint = $"{GraphRootUri}/teams/{teamId}/channels/{channelId}/chatThreads";
 
             PostMessage content = new PostMessage()
             {
@@ -132,7 +132,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
         public async Task<string> CreateNewTeamAndGroup(string accessToken, Group group)
         {
             // create group
-            string endpoint = ServiceHelper.GraphRootUri + "groups";
+            string endpoint = $"{GraphRootUri}/groups";
             if (group != null)
             {
                 group.groupTypes = new string[] { "Unified" };
@@ -148,13 +148,13 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             }
 
             string responseBody = await response.Content.ReadAsStringAsync(); ;
-            string groupId = responseBody.Deserialize<Group>().id;
+            string groupId = responseBody.Deserialize<Group>().id; // groupId is the same as teamId
 
             // add me as member
             string me = await GetMyId(accessToken);
-            string payload = $"{{ '@odata.id': '{ServiceHelper.GraphRootUri}users/{me}' }}";
+            string payload = $"{{ '@odata.id': '{GraphRootUri}/users/{me}' }}";
             HttpResponseMessage responseRef = await ServiceHelper.SendRequest(HttpMethod.Post,
-                ServiceHelper.GraphRootUri + $"groups/{groupId}/members/$ref",
+                $"{GraphRootUri}/groups/{groupId}/members/$ref",
                 accessToken, payload);
 
             // create team
@@ -164,7 +164,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
 
         public async Task<String> AddTeamToGroup(string groupId, string accessToken)
         {
-            string endpoint = ServiceHelper.GraphRootUri + "groups/" + groupId + "/team";
+            string endpoint = $"{GraphRootUri}/groups/{groupId}/team";
             Team team = new Models.Team();
             team.guestSettings = new Models.TeamGuestSettings() { allowCreateUpdateChannels = false, allowDeleteChannels = false };
 
@@ -174,10 +174,10 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             return response.ReasonPhrase;
         }
 
-
-        public async Task<String> UpdateTeam(string groupId, string accessToken)
+        public async Task<String> UpdateTeam(string teamId, string accessToken)
         {
-            string endpoint = ServiceHelper.GraphRootUri + "groups/" + groupId + "/team";
+            string endpoint = $"{GraphRootUri}/teams/{teamId}";
+
             Team team = new Models.Team();
             team.guestSettings = new Models.TeamGuestSettings() { allowCreateUpdateChannels = true, allowDeleteChannels = false };
 
@@ -187,19 +187,39 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             return response.ReasonPhrase;
         }
 
-
-        public async Task AddMember(string groupId, Member member, string accessToken)
+        public async Task AddMember(string teamId, Member member, string accessToken)
         {
-            string payload = $"{{ '@odata.id': '{ServiceHelper.GraphRootUri}users/{member.upn}' }}";
-            string endpoint = ServiceHelper.GraphRootUri + $"groups/{groupId}/members/$ref";
+            // If you have a user's UPN, you can add it directly to a group, but then there will be a 
+            // significant delay before Microsoft Teams reflects the change. Instead, we find the user 
+            // object's id, and add the ID to the group through the Graph beta endpoint, which is 
+            // recognized by Microsoft Teams much more quickly. See 
+            // https://developer.microsoft.com/en-us/graph/docs/api-reference/beta/resources/teams_api_overview 
+            // for more about delays with adding members.
+
+            // Step 1 -- Look up the user's id from their UPN
+            string endpoint = $"{GraphRootUri}/users/{member.upn}";
+            HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Get, endpoint, accessToken);
+            string responseBody = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(response.ReasonPhrase);
+
+            String userId = responseBody.Deserialize<Member>().id;
+
+            // Step 2 -- add that id to the group
+            string payload = $"{{ '@odata.id': '{GraphRootUri}/users/{userId}' }}";
+            endpoint = $"{GraphRootUri}/groups/{teamId}/members/$ref";
+
             HttpResponseMessage responseRef = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, payload);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(response.ReasonPhrase);
 
             if (member.owner)
             {
-                endpoint = ServiceHelper.GraphRootUri + $"groups/{groupId}/owners/$ref";
+                endpoint = $"{GraphRootUri}/groups/{teamId}/owners/$ref";
                 HttpResponseMessage responseOwner = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, payload);
+                if (!response.IsSuccessStatusCode)
+                    throw new Exception(response.ReasonPhrase);
             }
-
         }
     }
 }
