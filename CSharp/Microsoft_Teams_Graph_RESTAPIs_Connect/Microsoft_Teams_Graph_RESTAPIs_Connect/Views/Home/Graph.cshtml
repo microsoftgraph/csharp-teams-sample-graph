@@ -4,7 +4,9 @@
 @{
     ViewBag.Title = Resource.App_Name;
 }
-@model Microsoft_Teams_Graph_RESTAPIs_Connect.Models.ResultsViewModel
+
+@model Microsoft_Teams_Graph_RESTAPIs_Connect.Models.FormOutput
+
 <h1>@ViewBag.Title</h1>
 <h3>Choose operation:</h3>
 
@@ -27,7 +29,10 @@
     @Html.ActionLink("Get Apps", "GetAppsLoad", "Home")<br />
 </div>
 <hr />
-@Html.Partial("_AppList")
+
+@Html.DropDownListFor(m => m.SelectedTeam, Model.FlavorItems);
+
+@*@Html.Partial("_AppList")
 
 @Html.Partial("_Team")
 @Html.Partial("_Channels")
@@ -39,7 +44,7 @@
 @Html.Partial("_CreateUpdateTeam")
 
 
-@Html.Partial("_ResultsPartial")
+@Html.Partial("_ResultsPartial")*@
 
 <script>
 

@@ -27,9 +27,41 @@ namespace GraphAPI.Web.Controllers
 
         }
 
-        public ActionResult Index()
+        private async Task<ActionResult> WithExceptionHandling(Func<string, Task<FormOutput>> f)
         {
-            return View("Graph");
+            try
+            {
+                // Get an access token.
+                string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
+                string userId = await graphService.GetMyId(accessToken);
+                FormOutput output = await f(accessToken);
+                output.Id = userId;
+                output.Teams = new Team[]
+                {
+                    new Team() { id="5", name="foo" }
+                };
+                //results.Items = await graphService.GetMyTeams(accessToken, Convert.ToString(Resource.Prop_ID));
+                return View("Graph", output);
+            }
+            catch (Exception e)
+            {
+                if (e.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                return RedirectToAction("Index", "Error", new { message = Resource.Error_Message + Request.RawUrl + ": " + e.Message });
+            }
+
+        }
+
+        [Authorize]
+        public async Task<ActionResult> Index()
+        {
+            return await WithExceptionHandling(
+                async token =>
+                {
+                    return new FormOutput()
+                    {
+                    };
+                }
+                );
         }
 
         [Authorize]

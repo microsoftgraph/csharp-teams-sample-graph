@@ -19,5 +19,11 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public TeamFunSettings funSettings { get; set; }
+
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string id { get; set; }
+
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string name { get; set; }
     }
 }
