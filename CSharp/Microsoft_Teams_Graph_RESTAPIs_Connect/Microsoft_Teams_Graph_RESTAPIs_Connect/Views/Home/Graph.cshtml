@@ -30,7 +30,11 @@
 </div>
 <hr />
 
-@Html.DropDownListFor(m => m.SelectedTeam, Model.FlavorItems);
+@using (Ajax.BeginForm("CreateNewTeamAndGroup", "home", new AjaxOptions() { OnSuccess = "success", UpdateTargetId = "Result" }))
+{
+
+Html.DropDownListFor(m => m.SelectedTeam, Model.FlavorItems);
+}
 
 @*@Html.Partial("_AppList")
 
