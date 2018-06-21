@@ -12,6 +12,7 @@ using System;
 
 using System.Net.Http;
 using Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles;
+using System.Linq;
 
 namespace GraphAPI.Web.Controllers
 {
@@ -38,8 +39,9 @@ namespace GraphAPI.Web.Controllers
                 output.Id = userId;
                 output.Teams = new Team[]
                 {
-                    new Team() { id="5", name="foo" }
+                    new Team() { id="5", displayName="foo" }
                 };
+                output.Teams = (await graphService.NewGetMyTeams(accessToken, Convert.ToString(Resource.Prop_ID))).ToArray();
                 //results.Items = await graphService.GetMyTeams(accessToken, Convert.ToString(Resource.Prop_ID));
                 return View("Graph", output);
             }

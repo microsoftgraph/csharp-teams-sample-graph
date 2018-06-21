@@ -105,6 +105,20 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             return items;
         }
 
+        public async Task<IEnumerable<Team>> NewGetMyTeams(string accessToken, string resourcePropId)
+        {
+            string endpoint = $"{GraphRootUri}/me/joinedTeams";
+
+            HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Get, endpoint, accessToken);
+            if (response != null && response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                var t = JsonConvert.DeserializeObject<ResultList<Team>>(content);
+                return t.value;
+            }
+            return new Team[0];
+        }
+
         public async Task<HttpResponseMessage> PostMessage(string accessToken, string teamId, string channelId, string message)
         {
             string endpoint = $"{GraphRootUri}/teams/{teamId}/channels/{channelId}/chatThreads";

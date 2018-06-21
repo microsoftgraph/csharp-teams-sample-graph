@@ -24,6 +24,12 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
         public string id { get; set; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string name { get; set; }
+        public string displayName { get; set; }
+    }
+
+    public class ResultList<T>
+    {
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public T[] value { get; set; }
     }
 }

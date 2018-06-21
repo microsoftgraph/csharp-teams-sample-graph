@@ -35,7 +35,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
 
         public IEnumerable<SelectListItem> FlavorItems
         {
-            get { return new SelectList(Teams, "id", "name"); }
+            get { return new SelectList(Teams, "id", "displayName"); }
         }
 
         public bool ShowTeamList { get; set; } = false;
