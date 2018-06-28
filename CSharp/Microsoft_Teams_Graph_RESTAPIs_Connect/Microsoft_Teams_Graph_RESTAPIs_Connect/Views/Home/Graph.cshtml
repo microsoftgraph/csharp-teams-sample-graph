@@ -30,10 +30,16 @@
 </div>
 <hr />
 
-@using (Ajax.BeginForm("CreateNewTeamAndGroup", "home", new AjaxOptions() { OnSuccess = "success", UpdateTargetId = "Result" }))
-{
+    @Html.DisplayText("asfdaf!");
 
-Html.DropDownListFor(m => m.SelectedTeam, Model.FlavorItems);
+@using (Html.BeginForm("Foo", "Home"))
+{
+    <div> oasih</div>
+    @Html.DisplayText("Hello!");
+    @Html.LabelFor(m => m.SelectedTeam);
+    @Html.DropDownListFor(m => m.SelectedTeam, Model.TeamItems);
+    @Html.DisplayText("Bye!");
+    <button type="submit" class="btn btn-default">Go!</button>
 }
 
 @*@Html.Partial("_AppList")

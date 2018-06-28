@@ -26,17 +26,23 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
 
     public class FormOutput
     {
+
+        // input: team, channel, app, clone params, input text, user id
+        // groups: displayName, mailNickname, description, visibility
+
         public string Id { get; set; }
         public Team[] Teams { get; set; }
+        public IEnumerable<SelectListItem> TeamItems => new SelectList(Teams, "id", "displayName");
+        //public IEnumerable<SelectListItem> TeamItems => new SelectList(Teams.Select(t => new SelectListItem() { Text = t.displayName, Value = t.id }));
         //public SelectListItem[] Teams { get; set; }
 
-        [Display(Name = "Favorite Flavor")]
-        public int SelectedTeam { get; set; }
+        //        [Display(Name = "Favorite Flavor")]
+        public string SelectedTeam { get; set; }
 
-        public IEnumerable<SelectListItem> FlavorItems
-        {
-            get { return new SelectList(Teams, "id", "displayName"); }
-        }
+        //public IEnumerable<SelectListItem> FlavorItems
+        //{
+        //    get { return new SelectList(Teams, "id", "displayName"); }
+        //}
 
         public bool ShowTeamList { get; set; } = false;
     }

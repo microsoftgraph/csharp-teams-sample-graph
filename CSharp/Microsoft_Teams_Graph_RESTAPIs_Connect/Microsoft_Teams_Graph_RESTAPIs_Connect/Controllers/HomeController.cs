@@ -340,6 +340,11 @@ namespace GraphAPI.Web.Controllers
                 return RedirectToAction("Index", "Error", new { message = Resource.Error_Message + Request.RawUrl + ": " + e.Message });
             }
         }
+        [Authorize]
+        public async Task<ActionResult> Foo(FormOutput data)
+        {
+            return View("Graph");
+        }
 
         [Authorize]
         public async Task<String> CreateNewTeamAndGroup(Group group)
