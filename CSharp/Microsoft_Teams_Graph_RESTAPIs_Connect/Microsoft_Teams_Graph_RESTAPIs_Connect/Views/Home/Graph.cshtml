@@ -1,22 +1,22 @@
 ﻿<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
         See LICENSE in the source repository root for complete license information. -->
 @using Resources
-@{
-    ViewBag.Title = Resource.App_Name;
-}
 
 @model Microsoft_Teams_Graph_RESTAPIs_Connect.Models.FormOutput
 
-<h1>@ViewBag.Title</h1>
+<h1>@Resource.App_Name</h1>
 <h3>Choose operation:</h3>
 
 @if (!GraphAPI.Web.Controllers.HomeController.hasAppId)
 {
-    <div style="color: red; font-size: 30pt" >You need to register this application and provide an app secret, see README.md for details.</div>
+    <div style="color: red; font-size: 30pt">You need to register this application and provide an app secret, see README.md for details.</div>
 }
 
 <div class="col-md-offset-1">
-    @Html.ActionLink("Get My Teams", "GetMyTeamsLoad", "Home")<br />
+    @Html.ActionLink("Get My Teams", "GetTeamsAction", "Home")<br />
+    @Html.ActionLink("Get My Teams", "GetTeamsForm", "Home")<br />
+
+    @*@Html.ActionLink("Get My Teams", "GetMyTeamsLoad", "Home")<br />*@
     @Html.ActionLink("Get Channels", "GetChannelsLoad", "Home")<br />
     @Html.ActionLink("Create Channel", "CreateChannelLoad", "Home")<br />
     @Html.ActionLink("Post Message", "PostMessageLoad", "Home")<br />
@@ -30,31 +30,47 @@
 </div>
 <hr />
 
-    @Html.DisplayText("asfdaf!");
-
-@using (Html.BeginForm("Foo", "Home"))
+@if (Model.ShowTeamOutput)
 {
-    <div> oasih</div>
-    @Html.DisplayText("Hello!");
-    @Html.LabelFor(m => m.SelectedTeam);
-    @Html.DropDownListFor(m => m.SelectedTeam, Model.TeamItems);
-    @Html.DisplayText("Bye!");
+    <div class="col-md-12">
+        <div class="col-md-12">
+            <table id="entity">
+                @foreach (var t in Model.Teams)
+                {
+                    <tr>
+                        <td class="pad">@t.displayName</td>
+                        <td>@t.id</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm(Model.Action, "Home"))
+{
+    if (Model.ShowTeamDropdown)
+    {
+        @Html.LabelFor(m => m.SelectedTeam)
+        @Html.DropDownListFor(m => m.SelectedTeam, Model.TeamItems)
+    }
+
     <button type="submit" class="btn btn-default">Go!</button>
 }
 
 @*@Html.Partial("_AppList")
 
-@Html.Partial("_Team")
-@Html.Partial("_Channels")
-@Html.Partial("_CreateChannel")
-@Html.Partial("_PostMessage")
+    @Html.Partial("_Team")
+    @Html.Partial("_Channels")
+    @Html.Partial("_CreateChannel")
+    @Html.Partial("_PostMessage")
 
-@Html.Partial("_Group")
-@Html.Partial("_Member")
-@Html.Partial("_CreateUpdateTeam")
+    @Html.Partial("_Group")
+    @Html.Partial("_Member")
+    @Html.Partial("_CreateUpdateTeam")
 
 
-@Html.Partial("_ResultsPartial")*@
+    @Html.Partial("_ResultsPartial")*@
 
 <script>
 

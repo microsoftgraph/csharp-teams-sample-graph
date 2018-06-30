@@ -29,15 +29,24 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
         // input: team, channel, app, clone params, input text, user id
         // groups: displayName, mailNickname, description, visibility
 
-        public string Id { get; set; }
+        public string Action { get; set; }
+        public string ButtonLabel { get; set; } = "submit";
 
-        public bool ShowTeamList { get; set; } = false;
+        public string UserUpn { get; set; }
 
-        public Team[] Teams { get; set; }
+
+        // Team list
+
+        public bool ShowTeamOutput { get; set; } = false;
+        public bool ShowTeamDropdown { get; set; } = false;
+
+        public Team[] Teams { get; set; } // output
         public IEnumerable<SelectListItem> TeamItems => Teams.Select(t => new SelectListItem() { Text = t.displayName, Value = t.id });
 
         [Display(Name = "Team")]
-        public string SelectedTeam { get; set; }
+        public string SelectedTeam { get; set; }  // input
+
+
 
     }
 }

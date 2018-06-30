@@ -329,6 +329,7 @@
     <Content Include="Views\Home\_Member.cshtml" />
     <Content Include="Views\Home\_CreateUpdateTeam.cshtml" />
     <Content Include="Views\Home\_AppList.cshtml" />
+    <Content Include="Views\Shared\_ResultsTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_GlobalResources\Resource.resx">

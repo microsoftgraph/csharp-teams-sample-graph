@@ -13,6 +13,7 @@ using System;
 using System.Net.Http;
 using Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace GraphAPI.Web.Controllers
 {
@@ -28,20 +29,21 @@ namespace GraphAPI.Web.Controllers
 
         }
 
-        private async Task<ActionResult> WithExceptionHandling(Func<string, Task<FormOutput>> f)
+        private async Task<ActionResult> WithExceptionHandling(Func<string, Task<FormOutput>> f, [CallerMemberName] string callerName = "")
         {
             try
             {
                 // Get an access token.
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                string userId = await graphService.GetMyId(accessToken);
                 FormOutput output = await f(accessToken);
-                output.Id = userId;
-                output.Teams = new Team[]
-                {
-                    new Team() { id="5", displayName="foo" }
-                };
-                output.Teams = (await graphService.NewGetMyTeams(accessToken, Convert.ToString(Resource.Prop_ID))).ToArray();
+
+                output.Action = callerName.Replace("Form", "Action");
+
+                output.UserUpn = await graphService.GetMyId(accessToken); // todo: cache
+
+                if (output.ShowTeamDropdown)
+                    output.Teams = (await graphService.NewGetMyTeams(accessToken, Convert.ToString(Resource.Prop_ID))).ToArray();
+
                 //results.Items = await graphService.GetMyTeams(accessToken, Convert.ToString(Resource.Prop_ID));
                 return View("Graph", output);
             }
@@ -51,6 +53,36 @@ namespace GraphAPI.Web.Controllers
                 return RedirectToAction("Index", "Error", new { message = Resource.Error_Message + Request.RawUrl + ": " + e.Message });
             }
 
+        }
+
+        [Authorize]
+        public async Task<ActionResult> GetTeamsForm()
+        {
+            return await WithExceptionHandling(
+                async token =>
+                {
+                    return new FormOutput()
+                    {
+                        ShowTeamDropdown=true
+                    };
+                }
+                );
+        }
+
+        [Authorize]
+        public async Task<ActionResult> GetTeamsAction(FormOutput data)
+        {
+            return await WithExceptionHandling(
+                async token =>
+                {
+                    var teams = (await graphService.NewGetMyTeams(token, Convert.ToString(Resource.Prop_ID))).ToArray();
+                    return new FormOutput()
+                    {
+                        Teams = teams,
+                        ShowTeamOutput = true
+                    };
+                }
+                );
         }
 
         [Authorize]
@@ -65,6 +97,7 @@ namespace GraphAPI.Web.Controllers
                 }
                 );
         }
+
 
         [Authorize]
         public async Task<ActionResult> GetMyTeamsLoad()
@@ -340,6 +373,7 @@ namespace GraphAPI.Web.Controllers
                 return RedirectToAction("Index", "Error", new { message = Resource.Error_Message + Request.RawUrl + ": " + e.Message });
             }
         }
+
         [Authorize]
         public async Task<ActionResult> Foo(FormOutput data)
         {
