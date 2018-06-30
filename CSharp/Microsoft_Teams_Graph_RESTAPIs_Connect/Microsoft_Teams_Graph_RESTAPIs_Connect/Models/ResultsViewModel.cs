@@ -4,6 +4,7 @@
 */
 
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
         // groups: displayName, mailNickname, description, visibility
 
         public string Action { get; set; }
-        public string ButtonLabel { get; set; } = "submit";
+        public string ButtonLabel { get; set; } 
 
         public string UserUpn { get; set; }
 
@@ -45,8 +46,20 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
 
         [Display(Name = "Team")]
         public string SelectedTeam { get; set; }  // input
-
-
-
     }
+
+    //public class Table<T>
+    //{
+
+
+    //    public Table(IEnumerable<T> items, Func<T, string> label, Func<T, string> value)
+    //    {
+    //        this.Items = items;
+    //        this.Label = label;
+    //        this.Value = value;
+    //    }
+    //    public IEnumerable<T> Items { get; set; }
+    //    public Func<T, string> Label { get; set; }
+    //    public Func<T, string> Value { get; set; }
+    //}
 }

@@ -1,8 +1,9 @@
 ﻿<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
         See LICENSE in the source repository root for complete license information. -->
 @using Resources
+@using Microsoft_Teams_Graph_RESTAPIs_Connect.Models;
 
-@model Microsoft_Teams_Graph_RESTAPIs_Connect.Models.FormOutput
+@model FormOutput
 
 <h1>@Resource.App_Name</h1>
 <h3>Choose operation:</h3>
@@ -32,19 +33,7 @@
 
 @if (Model.ShowTeamOutput)
 {
-    <div class="col-md-12">
-        <div class="col-md-12">
-            <table id="entity">
-                @foreach (var t in Model.Teams)
-                {
-                    <tr>
-                        <td class="pad">@t.displayName</td>
-                        <td>@t.id</td>
-                    </tr>
-                }
-            </table>
-        </div>
-    </div>
+    @Html.Partial("_ResultsTable", Model.TeamItems)
 }
 
 @using (Html.BeginForm(Model.Action, "Home"))
@@ -55,7 +44,10 @@
         @Html.DropDownListFor(m => m.SelectedTeam, Model.TeamItems)
     }
 
-    <button type="submit" class="btn btn-default">Go!</button>
+    if (Model.ButtonLabel != null)
+    {
+        <button type="submit" class="btn btn-default">Go!</button>
+    }
 }
 
 @*@Html.Partial("_AppList")
