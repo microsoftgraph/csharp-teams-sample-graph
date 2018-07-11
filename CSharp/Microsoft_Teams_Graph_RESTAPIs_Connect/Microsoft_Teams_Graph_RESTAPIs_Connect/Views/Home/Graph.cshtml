@@ -18,7 +18,9 @@
     @Html.ActionLink("Get Channels", "GetChannelsForm", "Home")<br />
     @Html.ActionLink("Get Apps", "GetAppsForm", "Home")<br />
 
-    @Html.ActionLink("Create Channel", "CreateChannelLoad", "Home")<br />
+    @Html.ActionLink("Create Channel", "PostChannelsForm", "Home")<br />
+
+
     @Html.ActionLink("Post Message", "PostMessageLoad", "Home")<br />
 
     @Html.ActionLink("Create Team and Group", "GetGroupLoad", "Home")<br />
@@ -61,6 +63,18 @@
         @Html.LabelFor(m => m.SelectedApp)
         @Html.DropDownListFor(m => m.SelectedApp, Model.AppItems)
     }
+
+    if (Model.ShowNameInput)
+    {
+        @Html.LabelFor(m => m.NameInput);
+        @Html.TextBoxFor(m => m.NameInput);
+    }
+    if (Model.ShowDescriptionInput)
+    {
+        @Html.LabelFor(m => m.DescriptionInput);
+        @Html.TextBoxFor(m => m.DescriptionInput);
+    }
+
 
     if (Model.ButtonLabel != null)
     {

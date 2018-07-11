@@ -156,14 +156,49 @@ namespace GraphAPI.Web.Controllers
 
 
 
+        [Authorize]
+        public async Task<ActionResult> PostChannelsForm()
+        {
+            return await WithExceptionHandling(
+                token =>
+                {
+                    return new FormOutput()
+                    {
+                        ShowTeamDropdown = true,
+                        ShowNameInput = true,
+                        ShowDescriptionInput = true,
+                        ButtonLabel = "Create channel",
+                    };
+                }
+                );
+        }
+
+        [Authorize]
+        public async Task<ActionResult> PostChannelsAction(FormOutput data)
+        {
+            return await WithExceptionHandlingAsync(
+                async token =>
+                {
+                    HttpResponseMessage response = await graphService.CreateChannel(token,
+                        data.SelectedTeam, data.NameInput, data.DescriptionInput);
+                    var channels = (await graphService.NewGetChannels(token, data.SelectedTeam)).ToArray();
+                    return new FormOutput()
+                    {
+                        Channels = channels,
+                        ShowChannelOutput = true
+                    };
+                }
+                );
+        }
+
 
 
 
         [Authorize]
         public async Task<ActionResult> Index()
         {
-            return await WithExceptionHandlingAsync(
-                async token =>
+            return await WithExceptionHandling(
+                token =>
                 {
                     return new FormOutput()
                     {
