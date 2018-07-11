@@ -42,7 +42,7 @@ namespace GraphAPI.Web.Controllers
                 output.UserUpn = await graphService.GetMyId(accessToken); // todo: cache
 
                 if (output.ShowTeamDropdown)
-                    output.Teams = (await graphService.NewGetMyTeams(accessToken, Convert.ToString(Resource.Prop_ID))).ToArray();
+                    output.Teams = (await graphService.NewGetMyTeams(accessToken)).ToArray();
 
                 //results.Items = await graphService.GetMyTeams(accessToken, Convert.ToString(Resource.Prop_ID));
                 return View("Graph", output);
@@ -75,11 +75,42 @@ namespace GraphAPI.Web.Controllers
             return await WithExceptionHandling(
                 async token =>
                 {
-                    var teams = (await graphService.NewGetMyTeams(token, Convert.ToString(Resource.Prop_ID))).ToArray();
+                    var teams = (await graphService.NewGetMyTeams(token)).ToArray();
                     return new FormOutput()
                     {
                         Teams = teams,
                         ShowTeamOutput = true
+                    };
+                }
+                );
+        }
+
+        [Authorize]
+        public async Task<ActionResult> GetChannelsForm()
+        {
+            return await WithExceptionHandling(
+                async token =>
+                {
+                    return new FormOutput()
+                    {
+                        ShowTeamDropdown = true,
+                        ButtonLabel="Get channels",
+                    };
+                }
+                );
+        }
+
+        [Authorize]
+        public async Task<ActionResult> GetChannelsAction(FormOutput data)
+        {
+            return await WithExceptionHandling(
+                async token =>
+                {
+                    var channels = (await graphService.NewGetChannels(token, data.SelectedTeam)).ToArray();
+                    return new FormOutput()
+                    {
+                        Channels = channels,
+                        ShowChannelOutput = true
                     };
                 }
                 );

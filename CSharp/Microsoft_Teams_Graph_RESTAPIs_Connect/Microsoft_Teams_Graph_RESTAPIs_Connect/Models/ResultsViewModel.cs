@@ -46,6 +46,18 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
 
         [Display(Name = "Team")]
         public string SelectedTeam { get; set; }  // input
+
+
+        // Channel list
+
+        public bool ShowChannelOutput { get; set; } = false;
+        public bool ShowChannelDropdown { get; set; } = false;
+
+        public Channel[] Channels { get; set; } // output
+        public IEnumerable<SelectListItem> ChannelItems => Channels.Select(t => new SelectListItem() { Text = t.displayName, Value = t.id });
+
+        [Display(Name = "Channel")]
+        public string SelectedChannel{ get; set; }  // input
     }
 
     //public class Table<T>

@@ -67,6 +67,20 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             return items;
         }
 
+        public async Task<IEnumerable<Channel>> NewGetChannels(string accessToken, string teamId)
+        {
+            string endpoint = $"{GraphRootUri}/teams/{teamId}/channels";
+            HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Get, endpoint, accessToken);
+            if (response != null && response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                var t = JsonConvert.DeserializeObject<ResultList<Channel>>(content);
+                return t.value;
+            }
+            return new Channel[0];
+        }
+
+
         /// <summary>
         /// Get the current user's id from their profile.
         /// </summary>
@@ -105,7 +119,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             return items;
         }
 
-        public async Task<IEnumerable<Team>> NewGetMyTeams(string accessToken, string resourcePropId)
+        public async Task<IEnumerable<Team>> NewGetMyTeams(string accessToken)
         {
             string endpoint = $"{GraphRootUri}/me/joinedTeams";
 
