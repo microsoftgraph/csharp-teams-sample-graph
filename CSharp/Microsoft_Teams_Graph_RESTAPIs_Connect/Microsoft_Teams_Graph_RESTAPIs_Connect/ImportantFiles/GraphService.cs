@@ -71,13 +71,25 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
         {
             string endpoint = $"{GraphRootUri}/teams/{teamId}/channels";
             HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Get, endpoint, accessToken);
+            return await ParseList<Channel>(response);
+        }
+
+        private static async Task<IEnumerable<T>> ParseList<T>(HttpResponseMessage response)
+        {
             if (response != null && response.IsSuccessStatusCode)
             {
                 string content = await response.Content.ReadAsStringAsync();
-                var t = JsonConvert.DeserializeObject<ResultList<Channel>>(content);
+                var t = JsonConvert.DeserializeObject<ResultList<T>>(content);
                 return t.value;
             }
-            return new Channel[0];
+            return new T[0];
+        }
+
+        public async Task<IEnumerable<TeamsApp>> NewGetApps(string accessToken, string teamId)
+        {
+            string endpoint = $"{GraphRootUri}/teams/{teamId}/apps";
+            HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Get, endpoint, accessToken);
+            return await ParseList<TeamsApp>(response);
         }
 
 

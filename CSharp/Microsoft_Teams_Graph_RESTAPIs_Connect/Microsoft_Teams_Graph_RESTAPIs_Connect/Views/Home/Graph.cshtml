@@ -16,7 +16,8 @@
 <div class="col-md-offset-1">
     @Html.ActionLink("Get My Teams", "GetTeamsAction", "Home")<br />
     @Html.ActionLink("Get Channels", "GetChannelsForm", "Home")<br />
-    @Html.ActionLink("Get My Teams", "GetTeamsForm", "Home")<br />
+    @Html.ActionLink("Get Apps", "GetAppsForm", "Home")<br />
+
 
     @*@Html.ActionLink("Get My Teams", "GetMyTeamsLoad", "Home")<br />*@
     @Html.ActionLink("Get Channels", "GetChannelsLoad", "Home")<br />
@@ -53,6 +54,16 @@
     {
         @Html.LabelFor(m => m.SelectedChannel)
         @Html.DropDownListFor(m => m.SelectedChannel, Model.ChannelItems)
+    }
+
+    if (Model.ShowAppOutput)
+    {
+        @Html.Partial("_ResultsTable", Model.AppItems)
+    }
+    if (Model.ShowAppDropdown)
+    {
+        @Html.LabelFor(m => m.SelectedApp)
+        @Html.DropDownListFor(m => m.SelectedApp, Model.AppItems)
     }
 
     if (Model.ButtonLabel != null)

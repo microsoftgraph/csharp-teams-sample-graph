@@ -58,6 +58,18 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
 
         [Display(Name = "Channel")]
         public string SelectedChannel{ get; set; }  // input
+
+
+        // app list
+
+        public bool ShowAppOutput { get; set; } = false;
+        public bool ShowAppDropdown { get; set; } = false;
+
+        public TeamsApp[] Apps { get; set; } // output
+        public IEnumerable<SelectListItem> AppItems => Apps.Select(t => new SelectListItem() { Text = t.name, Value = t.id });
+
+        [Display(Name = "App")]
+        public string SelectedApp { get; set; }  // input
     }
 
     //public class Table<T>

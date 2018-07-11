@@ -117,6 +117,37 @@ namespace GraphAPI.Web.Controllers
         }
 
         [Authorize]
+        public async Task<ActionResult> GetAppsForm()
+        {
+            return await WithExceptionHandling(
+                async token =>
+                {
+                    return new FormOutput()
+                    {
+                        ShowTeamDropdown = true,
+                        ButtonLabel = "Get Apps",
+                    };
+                }
+                );
+        }
+
+        [Authorize]
+        public async Task<ActionResult> GetAppsAction(FormOutput data)
+        {
+            return await WithExceptionHandling(
+                async token =>
+                {
+                    var apps = (await graphService.NewGetApps(token, data.SelectedTeam)).ToArray();
+                    return new FormOutput()
+                    {
+                        Apps = apps,
+                        ShowAppOutput = true
+                    };
+                }
+                );
+        }
+
+        [Authorize]
         public async Task<ActionResult> Index()
         {
             return await WithExceptionHandling(
