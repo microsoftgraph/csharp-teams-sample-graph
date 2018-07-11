@@ -29,7 +29,14 @@ namespace GraphAPI.Web.Controllers
 
         }
 
-        private async Task<ActionResult> WithExceptionHandling(Func<string, Task<FormOutput>> f, [CallerMemberName] string callerName = "")
+        private async Task<ActionResult> WithExceptionHandling(Func<string, FormOutput> f, [CallerMemberName] string callerName = "")
+        {
+            return await WithExceptionHandlingAsync(
+                async s => f(s),
+                callerName);
+        }
+
+        private async Task<ActionResult> WithExceptionHandlingAsync(Func<string, Task<FormOutput>> f, [CallerMemberName] string callerName = "")
         {
             try
             {
@@ -59,7 +66,7 @@ namespace GraphAPI.Web.Controllers
         public async Task<ActionResult> GetTeamsForm()
         {
             return await WithExceptionHandling(
-                async token =>
+                token =>
                 {
                     return new FormOutput()
                     {
@@ -72,7 +79,7 @@ namespace GraphAPI.Web.Controllers
         [Authorize]
         public async Task<ActionResult> GetTeamsAction(FormOutput data)
         {
-            return await WithExceptionHandling(
+            return await WithExceptionHandlingAsync(
                 async token =>
                 {
                     var teams = (await graphService.NewGetMyTeams(token)).ToArray();
@@ -89,7 +96,7 @@ namespace GraphAPI.Web.Controllers
         public async Task<ActionResult> GetChannelsForm()
         {
             return await WithExceptionHandling(
-                async token =>
+                token =>
                 {
                     return new FormOutput()
                     {
@@ -103,7 +110,7 @@ namespace GraphAPI.Web.Controllers
         [Authorize]
         public async Task<ActionResult> GetChannelsAction(FormOutput data)
         {
-            return await WithExceptionHandling(
+            return await WithExceptionHandlingAsync(
                 async token =>
                 {
                     var channels = (await graphService.NewGetChannels(token, data.SelectedTeam)).ToArray();
@@ -120,7 +127,7 @@ namespace GraphAPI.Web.Controllers
         public async Task<ActionResult> GetAppsForm()
         {
             return await WithExceptionHandling(
-                async token =>
+                token =>
                 {
                     return new FormOutput()
                     {
@@ -134,7 +141,7 @@ namespace GraphAPI.Web.Controllers
         [Authorize]
         public async Task<ActionResult> GetAppsAction(FormOutput data)
         {
-            return await WithExceptionHandling(
+            return await WithExceptionHandlingAsync(
                 async token =>
                 {
                     var apps = (await graphService.NewGetApps(token, data.SelectedTeam)).ToArray();
@@ -147,10 +154,15 @@ namespace GraphAPI.Web.Controllers
                 );
         }
 
+
+
+
+
+
         [Authorize]
         public async Task<ActionResult> Index()
         {
-            return await WithExceptionHandling(
+            return await WithExceptionHandlingAsync(
                 async token =>
                 {
                     return new FormOutput()
