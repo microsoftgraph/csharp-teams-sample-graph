@@ -36,6 +36,10 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
         public string UserUpn { get; set; }
         public string NameInput { get; set; }
         public string DescriptionInput { get; set; }
+        public string MessageBodyInput { get; set; }
+
+
+        public string SuccessMessage { get; set; }
 
         // Team list
 
@@ -55,6 +59,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
         public bool ShowChannelDropdown { get; set; } = false;
         public bool ShowNameInput { get; set; } = false;
         public bool ShowDescriptionInput { get; set; } = false;
+        public bool ShowMessageBodyInput { get; set; } = false;
 
         public Channel[] Channels { get; set; } // output
         public IEnumerable<SelectListItem> ChannelItems => Channels.Select(t => new SelectListItem() { Text = t.displayName, Value = t.id });

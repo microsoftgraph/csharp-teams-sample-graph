@@ -159,10 +159,9 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
                     }
                 }
             };
-            List<ResultsItem> items = new List<ResultsItem>();
             HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, content);
 
-            return response;//response.ReasonPhrase;
+            return response;
         }
 
         public async Task<string> CreateNewTeamAndGroup(string accessToken, Group group)

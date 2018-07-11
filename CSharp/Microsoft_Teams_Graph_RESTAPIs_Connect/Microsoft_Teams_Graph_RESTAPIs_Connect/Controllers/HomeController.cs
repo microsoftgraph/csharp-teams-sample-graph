@@ -191,6 +191,39 @@ namespace GraphAPI.Web.Controllers
                 );
         }
 
+        [Authorize]
+        public async Task<ActionResult> PostMessageForm()
+        {
+            return await WithExceptionHandling(
+                token =>
+                {
+                    return new FormOutput()
+                    {
+                        ShowTeamDropdown = true,
+                        ShowChannelDropdown = true,
+                        ShowMessageBodyInput = true,
+                        ButtonLabel = "Post Message",
+                    };
+                }
+                );
+        }
+
+        [Authorize]
+        public async Task<ActionResult> PostMessageAction(FormOutput data)
+        {
+            return await WithExceptionHandlingAsync(
+                async token =>
+                {
+                    HttpResponseMessage response = await graphService.PostMessage(token,
+                        data.SelectedTeam, data.SelectedChannel, data.MessageBodyInput);
+                    return new FormOutput()
+                    {
+                        SuccessMessage = "Done",
+                    };
+                }
+                );
+        }
+
 
 
 
