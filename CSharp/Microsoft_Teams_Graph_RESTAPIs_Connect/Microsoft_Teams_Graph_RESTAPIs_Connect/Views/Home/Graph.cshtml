@@ -55,6 +55,8 @@
         // @Html.DropDownListFor(m => m.SelectedChannel, Model.ChannelItems)
         @Html.TextBoxFor(m => m.SelectedChannel);
     }
+    @Html.ShowLabeledTextBox(Model.ShowNameInput, m => m.NameInput);
+    @Html.ShowLabeledTextBox(Model.ShowDescriptionInput, m => m.DescriptionInput);
 
     if (Model.ShowAppOutput)
     {
@@ -66,8 +68,6 @@
         @Html.DropDownListFor(m => m.SelectedApp, Model.AppItems)
     }
 
-    @Html.ShowLabeledTextBox(Model.ShowNameInput, m => m.NameInput);
-    @Html.ShowLabeledTextBox(Model.ShowDescriptionInput, m => m.DescriptionInput);
     @Html.ShowLabeledTextBox(Model.ShowMessageBodyInput, m => m.MessageBodyInput);
 
     if (Model.SuccessMessage != null)
