@@ -16,9 +16,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Views
         }
 
         public static MvcHtmlString ShowLabeledTextBox<TModel, TProperty>
-            (this HtmlHelper<TModel> htmlHelper,
-            bool show,
-            Expression<Func<TModel, TProperty>> expression)
+            (this HtmlHelper<TModel> htmlHelper, bool show, Expression<Func<TModel, TProperty>> expression)
         {
             if (show)
             {
