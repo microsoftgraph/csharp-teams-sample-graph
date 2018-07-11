@@ -2,6 +2,8 @@
         See LICENSE in the source repository root for complete license information. -->
 @using Resources
 @using Microsoft_Teams_Graph_RESTAPIs_Connect.Models;
+@using Microsoft_Teams_Graph_RESTAPIs_Connect.Views;
+@using System.Linq.Expressions;
 
 @model FormOutput
 
@@ -19,8 +21,6 @@
     @Html.ActionLink("Get Apps", "GetAppsForm", "Home")<br />
 
     @Html.ActionLink("Create Channel", "PostChannelsForm", "Home")<br />
-
-
     @Html.ActionLink("Post Message", "PostMessageForm", "Home")<br />
 
     @Html.ActionLink("Create Team and Group", "GetGroupLoad", "Home")<br />
@@ -66,21 +66,9 @@
         @Html.DropDownListFor(m => m.SelectedApp, Model.AppItems)
     }
 
-    if (Model.ShowNameInput)
-    {
-        @Html.LabelFor(m => m.NameInput);
-        @Html.TextBoxFor(m => m.NameInput);
-    }
-    if (Model.ShowDescriptionInput)
-    {
-        @Html.LabelFor(m => m.DescriptionInput);
-        @Html.TextBoxFor(m => m.DescriptionInput);
-    }
-    if (Model.ShowMessageBodyInput)
-    {
-        @Html.LabelFor(m => m.MessageBodyInput);
-        @Html.TextBoxFor(m => m.MessageBodyInput);
-    }
+    @Html.ShowLabeledTextBox(Model.ShowNameInput, m => m.NameInput);
+    @Html.ShowLabeledTextBox(Model.ShowDescriptionInput, m => m.DescriptionInput);
+    @Html.ShowLabeledTextBox(Model.ShowMessageBodyInput, m => m.MessageBodyInput);
 
     if (Model.SuccessMessage != null)
     {
@@ -90,6 +78,7 @@
 
     if (Model.ButtonLabel != null)
     {
+        <br/>
         <button type="submit" class="btn btn-default">@Model.ButtonLabel</button>
     }
 }
