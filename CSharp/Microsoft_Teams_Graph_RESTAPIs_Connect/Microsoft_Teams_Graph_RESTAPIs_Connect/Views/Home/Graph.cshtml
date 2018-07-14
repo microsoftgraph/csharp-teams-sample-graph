@@ -35,51 +35,36 @@
 
 @using (Html.BeginForm(Model.Action, "Home"))
 {
-    if (Model.ShowTeamOutput)
-    {
-        @Html.Partial("_ResultsTable", Model.TeamItems)
-    }
-    if (Model.ShowTeamDropdown)
-    {
-        @Html.LabelFor(m => m.SelectedTeam)
-        @Html.DropDownListFor(m => m.SelectedTeam, Model.TeamItems)
-    }
+    @Html.MaybeShowResultsTable(Model.ShowTeamOutput, Model.Teams, t => t.displayName, t => t.id);
+    @Html.MaybeShowDropdown(Model.ShowTeamDropdown, Model.Teams, t => t.displayName, t => t.id, m => m.SelectedTeam);
 
-    if (Model.ShowChannelOutput)
-    {
-        @Html.Partial("_ResultsTable", Model.ChannelItems)
-    }
-    if (Model.ShowChannelDropdown)
+    @Html.MaybeShowResultsTable(Model.ShowChannelOutput, Model.Channels, t => t.displayName, t => t.id);
+    @Html.MaybeShowLabeledTextBox(Model.ShowChannelDropdown, m => m.SelectedChannel);
+
+    @*if (Model.ShowChannelDropdown)
     {
         @Html.LabelFor(m => m.SelectedChannel)
-        // @Html.DropDownListFor(m => m.SelectedChannel, Model.ChannelItems)
-        @Html.TextBoxFor(m => m.SelectedChannel);
-    }
-    @Html.ShowLabeledTextBox(Model.ShowNameInput, m => m.NameInput);
-    @Html.ShowLabeledTextBox(Model.ShowDescriptionInput, m => m.DescriptionInput);
+        @Html.DropDownListFor(m => m.SelectedChannel, Model.ChannelItems)
+        //@Html.TextBoxFor(m => m.SelectedChannel);
+    }*@
 
-    if (Model.ShowAppOutput)
-    {
-        @Html.Partial("_ResultsTable", Model.AppItems)
-    }
-    if (Model.ShowAppDropdown)
-    {
-        @Html.LabelFor(m => m.SelectedApp)
-        @Html.DropDownListFor(m => m.SelectedApp, Model.AppItems)
-    }
+    @Html.MaybeShowLabeledTextBox(Model.ShowNameInput, m => m.NameInput);
+    @Html.MaybeShowLabeledTextBox(Model.ShowDescriptionInput, m => m.DescriptionInput);
 
-    @Html.ShowLabeledTextBox(Model.ShowMessageBodyInput, m => m.MessageBodyInput);
+    @Html.MaybeShowResultsTable(Model.ShowAppOutput, Model.Apps, t => t.name, t => t.id);
+    @Html.MaybeShowDropdown(Model.ShowAppDropdown, Model.Apps, t => t.name, t => t.id, m => m.SelectedApp);
+
+    @Html.MaybeShowLabeledTextBox(Model.ShowMessageBodyInput, m => m.MessageBodyInput);
 
     if (Model.SuccessMessage != null)
     {
         @Html.DisplayText(Model.SuccessMessage);
     }
 
-
     if (Model.ButtonLabel != null)
     {
         <br/>
-        <button type="submit" class="btn btn-default">@Model.ButtonLabel</button>
+        <button type = "submit" class="btn btn-default">@Model.ButtonLabel</button>
     }
 }
 

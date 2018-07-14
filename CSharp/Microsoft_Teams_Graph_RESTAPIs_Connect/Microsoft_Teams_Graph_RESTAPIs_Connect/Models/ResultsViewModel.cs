@@ -47,7 +47,6 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
         public bool ShowTeamDropdown { get; set; } = false;
 
         public Team[] Teams { get; set; } // output
-        public IEnumerable<SelectListItem> TeamItems => Teams.Select(t => new SelectListItem() { Text = t.displayName, Value = t.id });
 
         [Display(Name = "Team")]
         public string SelectedTeam { get; set; }  // input
@@ -62,7 +61,6 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
         public bool ShowMessageBodyInput { get; set; } = false;
 
         public Channel[] Channels { get; set; } // output
-        public IEnumerable<SelectListItem> ChannelItems => Channels.Select(t => new SelectListItem() { Text = t.displayName, Value = t.id });
 
         [Display(Name = "Channel")]
         public string SelectedChannel{ get; set; }  // input
@@ -74,24 +72,8 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
         public bool ShowAppDropdown { get; set; } = false;
 
         public TeamsApp[] Apps { get; set; } // output
-        public IEnumerable<SelectListItem> AppItems => Apps.Select(t => new SelectListItem() { Text = t.name, Value = t.id });
 
         [Display(Name = "App")]
         public string SelectedApp { get; set; }  // input
     }
-
-    //public class Table<T>
-    //{
-
-
-    //    public Table(IEnumerable<T> items, Func<T, string> label, Func<T, string> value)
-    //    {
-    //        this.Items = items;
-    //        this.Label = label;
-    //        this.Value = value;
-    //    }
-    //    public IEnumerable<T> Items { get; set; }
-    //    public Func<T, string> Label { get; set; }
-    //    public Func<T, string> Value { get; set; }
-    //}
 }

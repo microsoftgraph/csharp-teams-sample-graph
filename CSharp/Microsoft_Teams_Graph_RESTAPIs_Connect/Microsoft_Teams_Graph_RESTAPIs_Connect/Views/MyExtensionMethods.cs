@@ -15,16 +15,47 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Views
             return MvcHtmlString.Create(first.ToString() + string.Concat(strings.Select(s => s.ToString())));
         }
 
-        public static MvcHtmlString ShowLabeledTextBox<TModel, TProperty>
-            (this HtmlHelper<TModel> htmlHelper, bool show, Expression<Func<TModel, TProperty>> expression)
+        public static MvcHtmlString MaybeShowLabeledTextBox<TModel, TProperty>
+            (this HtmlHelper<TModel> htmlHelper, bool show, Expression<Func<TModel, TProperty>> member)
         {
             if (show)
             {
                 return MvcHtmlString.Create("<br/>").Concat(
-                    htmlHelper.LabelFor(expression),
-                    htmlHelper.TextBoxFor(expression));
+                    htmlHelper.LabelFor(member),
+                    htmlHelper.TextBoxFor(member));
             }
             return MvcHtmlString.Empty;
         }
+
+        public static MvcHtmlString MaybeShowDropdown<TModel, TItem, TProperty>
+             (this HtmlHelper<TModel> htmlHelper, bool show, IEnumerable<TItem> items,
+                        Func<TItem, string> member1, Func<TItem, string> member2, Expression<Func<TModel, TProperty>> selection)
+        {
+            if (show)
+            {
+                var listitems = items.Select(t => new SelectListItem() { Text = member1(t), Value = member2(t) });
+                return MvcHtmlString.Create("<br/>").Concat(
+                    htmlHelper.LabelFor(selection),
+                    htmlHelper.DropDownListFor(selection, listitems)
+                    );
+            }
+            return MvcHtmlString.Empty;
+        }
+
+
+        public static MvcHtmlString MaybeShowResultsTable<TModel, TItem>
+           (this HtmlHelper<TModel> htmlHelper, bool show, IEnumerable<TItem> items, 
+            Func<TItem, string> member1, Func<TItem, string> member2)
+        {
+            if (show)
+            {
+                var listitems = items.Select(t => new SelectListItem() { Text = member1(t), Value = member2(t) });
+                return MvcHtmlString.Create("<br/>").Concat(
+                    htmlHelper.Partial("_ResultsTable", listitems)
+                    );
+            }
+            return MvcHtmlString.Empty;
+        }
+
     }
 }
