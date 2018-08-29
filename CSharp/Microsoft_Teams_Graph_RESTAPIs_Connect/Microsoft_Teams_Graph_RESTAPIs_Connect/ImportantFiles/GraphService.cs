@@ -47,26 +47,6 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             return response;//.ReasonPhrase;
         }
 
-        /// <summary>
-        /// Get all channels of the given.
-        /// </summary>
-        /// <param name="accessToken">Access token to validate user</param>
-        /// <param name="teamId">Id of the team to get all associated channels</param>
-        /// <returns></returns>
-        public async Task<IEnumerable<ResultsItem>> GetChannels(string accessToken, string teamId, string resourcePropId)
-        {
-            string endpoint = $"{GraphRootUri}/teams/{teamId}/channels";
-
-            List<ResultsItem> items = new List<ResultsItem>();
-            HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Get, endpoint, accessToken);
-            if (response != null && response.IsSuccessStatusCode)
-            {
-                items = await ServiceHelper.GetResultsItem(response, "id", "displayName", resourcePropId);
-
-            }
-            return items;
-        }
-
         public async Task<IEnumerable<Channel>> NewGetChannels(string accessToken, string teamId)
         {
             string endpoint = $"{GraphRootUri}/teams/{teamId}/channels";
@@ -110,25 +90,6 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
                 userId = json.GetValue("id").ToString();
             }
             return userId?.Trim();
-        }
-
-        /// <summary>
-        /// Get all teams which user is the member of.
-        /// </summary>
-        /// <param name="accessToken">Access token to validate user</param>
-        /// <returns></returns>
-        public async Task<IEnumerable<ResultsItem>> GetMyTeams(string accessToken, string resourcePropId)
-        {
-            string endpoint = $"{GraphRootUri}/me/joinedTeams";
-
-            List<ResultsItem> items = new List<ResultsItem>();
-            HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Get, endpoint, accessToken);
-            if (response != null && response.IsSuccessStatusCode)
-            {
-                items = await ServiceHelper.GetResultsItem(response, "id", "displayName", resourcePropId);
-
-            }
-            return items;
         }
 
         public async Task<IEnumerable<Team>> NewGetMyTeams(string accessToken)
@@ -201,40 +162,6 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             return groupCreated;
         }
 
-
-        public async Task<string> CreateNewTeamAndGroup(string accessToken, Group group)
-        {
-            // create group
-            string endpoint = $"{GraphRootUri}/groups";
-            if (group != null)
-            {
-                group.groupTypes = new string[] { "Unified" };
-                group.mailEnabled = true;
-                group.securityEnabled = false;
-                group.visibility = "Private";
-            }
-
-            HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, group);
-            if (!response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadAsStringAsync();
-            }
-
-            string responseBody = await response.Content.ReadAsStringAsync(); ;
-            string groupId = responseBody.Deserialize<Group>().id; // groupId is the same as teamId
-
-            // add me as member
-            string me = await GetMyId(accessToken);
-            string payload = $"{{ '@odata.id': '{GraphRootUri}/users/{me}' }}";
-            HttpResponseMessage responseRef = await ServiceHelper.SendRequest(HttpMethod.Post,
-                $"{GraphRootUri}/groups/{groupId}/members/$ref",
-                accessToken, payload);
-
-            // create team
-            await AddTeamToGroup(groupId, accessToken);
-            return $"Created {groupId}";
-        }
-
         public async Task<String> AddTeamToGroup(string groupId, string accessToken)
         {
             string endpoint = $"{GraphRootUri}/groups/{groupId}/team";
@@ -293,22 +220,6 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
             }
-        }
-
-        public async Task<IEnumerable<ResultsItem>> ListApps(string accessToken, string teamId, string resourcePropId)
-        {
-            HttpResponseMessage response = await ServiceHelper.SendRequest(
-                HttpMethod.Get, 
-                $"{GraphRootUri}/teams/{teamId}/apps",
-                accessToken);
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            List<ResultsItem> items = new List<ResultsItem>();
-            if (response != null && response.IsSuccessStatusCode)
-            {
-                items = await ServiceHelper.GetResultsItem(response, "id", "displayName", resourcePropId);
-            }
-            return items;
         }
     }
 }
