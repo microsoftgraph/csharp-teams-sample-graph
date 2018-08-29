@@ -37,7 +37,8 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
         public string NameInput { get; set; }
         public string DescriptionInput { get; set; }
         public string MessageBodyInput { get; set; }
-
+        public String DisplayNameInput { get; set; }
+        public String MailNicknameInput { get; set; }
 
         public string SuccessMessage { get; set; }
 
@@ -50,6 +51,11 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
 
         [Display(Name = "Team")]
         public string SelectedTeam { get; set; }  // input
+
+
+        // Group/team create
+        public bool ShowDisplayNameInput { get; set; } = false;
+        public bool ShowMailNicknameInput { get; set; } = false;
 
 
         // Channel list

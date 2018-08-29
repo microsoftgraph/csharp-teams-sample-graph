@@ -225,6 +225,40 @@ namespace GraphAPI.Web.Controllers
         }
 
 
+        [Authorize]
+        public async Task<ActionResult> PostGroupForm()
+        {
+            return await WithExceptionHandling(
+                token =>
+                {
+                    return new FormOutput()
+                    {
+                        ShowDescriptionInput = true,
+                        ShowDisplayNameInput = true,
+                        ShowMailNicknameInput = true,
+                        ButtonLabel = "Create team",
+                    };
+                }
+                );
+        }
+
+        [Authorize]
+        public async Task<ActionResult> PostGroupAction(FormOutput data)
+        {
+            return await WithExceptionHandlingAsync(
+                async token =>
+                {
+                    Group group = await graphService.NewCreateNewTeamAndGroup(token, data.DisplayNameInput, data.MailNicknameInput, data.DescriptionInput);
+                    var teams = (await graphService.NewGetMyTeams(token)).ToArray();
+                    return new FormOutput()
+                    {
+                        Teams = teams,
+                        ShowTeamOutput = true
+                    };
+                }
+                );
+        }
+
 
 
         [Authorize]

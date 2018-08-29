@@ -164,6 +164,44 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             return response;
         }
 
+        public async Task<Group> NewCreateNewTeamAndGroup(string accessToken, String displayName, String mailNickname, String description)
+        {
+            // create group
+            Group groupParams = new Group()
+            {
+                displayName = displayName,
+                mailNickname = mailNickname,
+                description = description,
+
+                groupTypes = new string[] { "Unified" },
+                mailEnabled = true,
+                securityEnabled = false,
+                visibility = "Private",
+            };
+
+            HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Post, $"{GraphRootUri}/groups", accessToken, groupParams);
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            string responseBody = await response.Content.ReadAsStringAsync(); ;
+            Group groupCreated = responseBody.Deserialize<Group>();
+            string groupId = groupCreated.id; // groupId is the same as teamId
+
+            // add me as member
+            string me = await GetMyId(accessToken);
+            string payload = $"{{ '@odata.id': '{GraphRootUri}/users/{me}' }}";
+            HttpResponseMessage responseRef = await ServiceHelper.SendRequest(HttpMethod.Post,
+                $"{GraphRootUri}/groups/{groupId}/members/$ref",
+                accessToken, payload);
+
+            // create team
+            await AddTeamToGroup(groupId, accessToken);
+            return groupCreated;
+        }
+
+
         public async Task<string> CreateNewTeamAndGroup(string accessToken, Group group)
         {
             // create group

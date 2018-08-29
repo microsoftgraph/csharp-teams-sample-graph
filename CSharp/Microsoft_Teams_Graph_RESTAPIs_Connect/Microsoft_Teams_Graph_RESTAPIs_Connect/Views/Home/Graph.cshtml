@@ -23,7 +23,8 @@
     @Html.ActionLink("Create Channel", "PostChannelsForm", "Home")<br />
     @Html.ActionLink("Post Message", "PostMessageForm", "Home")<br />
 
-    @Html.ActionLink("Create Team and Group", "GetGroupLoad", "Home")<br />
+    @Html.ActionLink("Create Team and Group", "PostGroupForm", "Home")<br />
+
     @Html.ActionLink("Add Member", "GetMemberLoad", "Home")<br />
     @Html.ActionLink("Add Team to Group", "GetAddTeamToGroupLoad", "Home")<br />
     @Html.ActionLink("Update Team", "GetTeamLoadUpdate", "Home")<br />
@@ -49,7 +50,9 @@
     }*@
 
     @Html.MaybeShowLabeledTextBox(Model.ShowNameInput, m => m.NameInput);
+    @Html.MaybeShowLabeledTextBox(Model.ShowDisplayNameInput, m => m.DisplayNameInput);
     @Html.MaybeShowLabeledTextBox(Model.ShowDescriptionInput, m => m.DescriptionInput);
+    @Html.MaybeShowLabeledTextBox(Model.ShowMailNicknameInput, m => m.MailNicknameInput);
 
     @Html.MaybeShowResultsTable(Model.ShowAppOutput, Model.Apps, t => t.name, t => t.id);
     @Html.MaybeShowDropdown(Model.ShowAppDropdown, Model.Apps, t => t.name, t => t.id, m => m.SelectedApp);
