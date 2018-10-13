@@ -15,4 +15,9 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string id { get; set; }
     }
+
+    public class User
+    {
+        public string id { get; set; }
+    }
 }

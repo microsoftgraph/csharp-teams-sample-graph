@@ -42,6 +42,7 @@ namespace GraphAPI.Web.Controllers
             {
                 // Get an access token.
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
+                graphService.accessToken = accessToken;
                 FormOutput output = await f(accessToken);
 
                 output.Action = callerName.Replace("Form", "Action");
@@ -179,7 +180,7 @@ namespace GraphAPI.Web.Controllers
             return await WithExceptionHandlingAsync(
                 async token =>
                 {
-                    HttpResponseMessage response = await graphService.CreateChannel(token,
+                    await graphService.CreateChannel(token,
                         data.SelectedTeam, data.NameInput, data.DescriptionInput);
                     var channels = (await graphService.NewGetChannels(token, data.SelectedTeam)).ToArray();
                     return new FormOutput()
@@ -214,7 +215,7 @@ namespace GraphAPI.Web.Controllers
             return await WithExceptionHandlingAsync(
                 async token =>
                 {
-                    HttpResponseMessage response = await graphService.PostMessage(token,
+                    await graphService.PostMessage(token,
                         data.SelectedTeam, data.SelectedChannel, data.MessageBodyInput);
                     return new FormOutput()
                     {
@@ -361,12 +362,8 @@ namespace GraphAPI.Web.Controllers
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
                 string groupId = Request.Form["group-id"];
 
-                String response = await graphService.AddTeamToGroup(groupId, accessToken);
-                    
-                if (response != null )
-                    ViewBag.CreateTeamMessage = "Successfully created/updated a team";
-                else
-                    ViewBag.CreateTeamMessage = "Fail";
+                await graphService.AddTeamToGroup(groupId, accessToken);
+                ViewBag.CreateTeamMessage = "Successfully created/updated a team";
 
                 return Content(ViewBag.CreateTeamMessage);
             }
@@ -384,12 +381,8 @@ namespace GraphAPI.Web.Controllers
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
                 string groupId = Request.Form["group-id"];
 
-                String response = await graphService.UpdateTeam(groupId, accessToken);
-
-                if (response != null)
-                    ViewBag.CreateTeamMessage = "Successfully updated a team";
-                else
-                    ViewBag.CreateTeamMessage = "Fail";
+                await graphService.UpdateTeam(groupId, accessToken);
+                ViewBag.CreateTeamMessage = "Successfully updated a team";
 
                 return Content(ViewBag.CreateTeamMessage);
             }
@@ -408,7 +401,7 @@ namespace GraphAPI.Web.Controllers
             {
                 string groupId = member.groupId;
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                await graphService.AddMember(groupId, member, accessToken);
+                await graphService.AddMember(groupId, member.id, isOwner: false);
                 return "Success";
             }
             catch (Exception e)
