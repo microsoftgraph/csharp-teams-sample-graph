@@ -20,9 +20,15 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Views
         {
             if (show)
             {
-                return MvcHtmlString.Create("<br/>").Concat(
+                return MvcHtmlString.Create("<tr>").Concat(
+                    MvcHtmlString.Create("<td>"),
                     htmlHelper.LabelFor(member),
-                    htmlHelper.TextBoxFor(member));
+                    MvcHtmlString.Create("</td>"),
+                    MvcHtmlString.Create("<td>"),
+                    htmlHelper.TextBoxFor(member),
+                    MvcHtmlString.Create("</td>"),
+                    MvcHtmlString.Create("</tr>")
+                    );
             }
             return MvcHtmlString.Empty;
         }
@@ -34,9 +40,14 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Views
             if (show)
             {
                 var listitems = items.Select(t => new SelectListItem() { Text = member1(t), Value = member2(t) });
-                return MvcHtmlString.Create("<br/>").Concat(
+                return MvcHtmlString.Create("<tr>").Concat(
+                    MvcHtmlString.Create("<td>"),
                     htmlHelper.LabelFor(selection),
-                    htmlHelper.DropDownListFor(selection, listitems)
+                    MvcHtmlString.Create("</td>"),
+                    MvcHtmlString.Create("<td>"),
+                    htmlHelper.DropDownListFor(selection, listitems),
+                    MvcHtmlString.Create("</td>"),
+                    MvcHtmlString.Create("</tr>")
                     );
             }
             return MvcHtmlString.Empty;

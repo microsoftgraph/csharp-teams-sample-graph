@@ -19,3 +19,7 @@ textarea {
 .bluerow {
     background-color: lavender
 }
+
+label {
+    margin-right: 12px;
+}
