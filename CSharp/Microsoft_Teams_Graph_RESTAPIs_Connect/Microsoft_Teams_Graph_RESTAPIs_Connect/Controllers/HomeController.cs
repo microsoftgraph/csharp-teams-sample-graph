@@ -51,6 +51,8 @@ namespace GraphAPI.Web.Controllers
 
                 if (output.ShowTeamDropdown)
                     output.Teams = (await graphService.NewGetMyTeams(accessToken)).ToArray();
+                if (output.ShowGroupDropdown)
+                    output.Groups = (await graphService.NewGetMyGroups(accessToken)).ToArray();
 
                 //results.Items = await graphService.GetMyTeams(accessToken, Convert.ToString(Resource.Prop_ID));
                 return View("Graph", output);
@@ -261,7 +263,6 @@ namespace GraphAPI.Web.Controllers
         }
 
 
-
         [Authorize]
         public async Task<ActionResult> Index()
         {
@@ -276,31 +277,38 @@ namespace GraphAPI.Web.Controllers
         }
 
 
-        //[Authorize]
-        //public async Task<ActionResult> GetMyTeamsLoad()
-        //{
-        //    await GetMyId();
 
-        //    ViewBag.GetMyTeamsLoad = "Enable";
-        //    return View("Graph");
-        //}
+        [Authorize]
+        public async Task<ActionResult> AddTeamToGroupForm()
+        {
+            return await WithExceptionHandling(
+                token =>
+                {
+                    return new FormOutput()
+                    {
+                        ShowGroupDropdown = true,
+                        ButtonLabel = "Create team",
+                    };
+                }
+                );
+        }
 
-        //[Authorize]
-        //public async Task<ActionResult> GetChannelsLoad()
-        //{
-        //    await GetMyId();
-            
-        //    ViewBag.GetChannelsLoad = "Enable";
-        //    return View("Graph");
-        //}
-
-        //[Authorize]
-        //public async Task<ActionResult> GetGroupLoad()
-        //{
-        //    await GetMyId();
-        //    ViewBag.GetGroupLoad = "Enable";
-        //    return View("Graph");
-        //}
+        [Authorize]
+        public async Task<ActionResult> AddTeamToGroupAction(FormOutput data)
+        {
+            return await WithExceptionHandlingAsync(
+                async token =>
+                {
+                    await graphService.AddTeamToGroup(data.SelectedTeam, token);
+                    var teams = (await graphService.NewGetMyTeams(token)).ToArray();
+                    return new FormOutput()
+                    {
+                        Teams = teams,
+                        ShowTeamOutput = true
+                    };
+                }
+                );
+        }
 
         [Authorize]
         public async Task<ActionResult> GetAddTeamToGroupLoad()

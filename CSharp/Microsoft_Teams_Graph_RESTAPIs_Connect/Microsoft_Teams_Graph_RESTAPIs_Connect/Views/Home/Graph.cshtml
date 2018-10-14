@@ -24,9 +24,9 @@
     @Html.ActionLink("Post Message", "PostMessageForm", "Home")<br />
 
     @Html.ActionLink("Create Team and Group", "PostGroupForm", "Home")<br />
+    @Html.ActionLink("Add Team to Group", "AddTeamToGroupForm", "Home")<br />
 
     @Html.ActionLink("Add Member", "GetMemberLoad", "Home")<br />
-    @Html.ActionLink("Add Team to Group", "GetAddTeamToGroupLoad", "Home")<br />
     @Html.ActionLink("Update Team", "GetTeamLoadUpdate", "Home")<br />
 
 </div>
@@ -40,6 +40,7 @@
 
     <table>
         @Html.MaybeShowDropdown(Model.ShowTeamDropdown, Model.Teams, t => t.displayName, t => t.id, m => m.SelectedTeam)
+        @Html.MaybeShowDropdown(Model.ShowGroupDropdown, Model.Groups, t => t.displayName, t => t.id, m => m.SelectedGroup)
         @Html.MaybeShowLabeledTextBox(Model.ShowChannelDropdown, m => m.SelectedChannel)
 
         @*if (Model.ShowChannelDropdown)

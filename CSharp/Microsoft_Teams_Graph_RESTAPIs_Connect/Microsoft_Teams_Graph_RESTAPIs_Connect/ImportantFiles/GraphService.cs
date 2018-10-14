@@ -98,6 +98,12 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             return ParseList<Team>(payload);
         }
 
+        public async Task<IEnumerable<Group>> NewGetMyGroups(string accessToken)
+        {
+            string payload = await HttpGet($"/me/joinedGroups");
+            return ParseList<Group>(payload);
+        }
+
         public async Task PostMessage(string accessToken, string teamId, string channelId, string message)
         {
             await HttpPost($"/teams/{teamId}/channels/{channelId}/chatThreads",

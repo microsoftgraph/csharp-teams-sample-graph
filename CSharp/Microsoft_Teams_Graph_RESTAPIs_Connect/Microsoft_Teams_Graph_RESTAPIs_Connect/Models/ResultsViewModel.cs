@@ -46,11 +46,15 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
 
         public bool ShowTeamOutput { get; set; } = false;
         public bool ShowTeamDropdown { get; set; } = false;
+        public bool ShowGroupDropdown { get; set; } = false;
 
         public Team[] Teams { get; set; } // output
+        public Group[] Groups { get; set; } // output
 
         [Display(Name = "Team")]
         public string SelectedTeam { get; set; }  // input
+        [Display(Name = "Group")]
+        public string SelectedGroup { get; set; }  // input
 
 
         // Group/team create
@@ -70,7 +74,6 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
 
         [Display(Name = "Channel")]
         public string SelectedChannel{ get; set; }  // input
-
 
         // app list
 
