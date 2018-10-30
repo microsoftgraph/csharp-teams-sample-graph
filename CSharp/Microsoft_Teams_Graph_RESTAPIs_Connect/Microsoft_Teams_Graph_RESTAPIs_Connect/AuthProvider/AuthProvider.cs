@@ -8,7 +8,6 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Microsoft_Teams_Graph_RESTAPIs_Connect.SessionToken;
 using System;
-using System.Configuration;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;

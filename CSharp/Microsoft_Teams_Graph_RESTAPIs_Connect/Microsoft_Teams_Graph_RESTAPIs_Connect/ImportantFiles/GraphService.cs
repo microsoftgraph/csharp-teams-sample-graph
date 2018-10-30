@@ -48,7 +48,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
         }
 
         /// <summary>
-        /// Get all channels of the given.
+        /// Get all channels of the given team.
         /// </summary>
         /// <param name="accessToken">Access token to validate user</param>
         /// <param name="teamId">Id of the team to get all associated channels</param>
@@ -122,7 +122,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             List<ResultsItem> items = new List<ResultsItem>();
             HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, content);
 
-            return response;//response.ReasonPhrase;
+            return response;
         }
 
         public async Task<string> CreateNewTeamAndGroup(string accessToken, Group group)

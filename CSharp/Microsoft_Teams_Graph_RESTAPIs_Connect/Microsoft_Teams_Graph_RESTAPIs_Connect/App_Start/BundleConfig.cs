@@ -1,5 +1,4 @@
-﻿using System.Web;
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
 
 namespace Microsoft_Teams_Graph_RESTAPIs_Connect
 {
