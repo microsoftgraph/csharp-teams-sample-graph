@@ -13,15 +13,32 @@ Please see the project's [Read Me file](./README.md) for more details.
 
 ## Build and run the sample app
 1.  Open the sample solution in Visual Studio.
-2.  In the Web.config file in the root directory, replace the 'ida:AppId', 'ida:AppSecret' and 'ida:RedirectUri' placeholder values with the values of your registered app.
-3.  Update the 'Web Server' of your web application with the 'ida:RedirectUri' of your registered app 
-    * In Solution Explorer, right-click the name of the Web application project for which you want to specify a Web server, and then click 'Properties'.
-    * In the 'Properties' window, click the 'Web' tab.
-    * Under 'Servers', update the 'Project Url' with the 'ida:RedirectUri' of your registered app.
-    * Click 'Create Virtual Directory'
-    * Save the file.
-4. Build and run the sample.
-5. Sign in with your account, and grant the requested permissions.
-    * Note you'll need to have appropriate elevated rights to run the app (Group.ReadWrite.All and User.ReadWrite.All)
-6. Choose operation, such as 'Get My Teams', 'Get Channels', 'Create Channel' or 'Post Message'.
-7. Response information is displayed at the bottom of the page.
+2. Go register you own appid & app secret at https://apps.dev.microsoft.com
+3. Create a file named Web.config.secrets (put it next to Web.config), and add in your appid, app secret, and RedirectUri:
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+  <appSettings >
+    <add key="ida:AppId" value="xxxxx"/>
+    <add key="ida:AppSecret" value="xxxxx"/>
+  </appSettings>
+```
+
+4. Update the 'Web Server' of your web application with the 'ida:RedirectUri' of your registered app 
+
+* In Solution Explorer, right-click the name of the Web application project for which you want to specify a Web server, and then click 'Properties'.
+* In the 'Properties' window, click the 'Web' tab.
+* Under 'Servers', update the 'Project Url' with the 'ida:RedirectUri' of your registered app.
+* Click 'Create Virtual Directory'
+* Save the file.
+
+5. Build and run the sample.
+
+6. Sign in with your account, and grant the requested permissions.
+
+* Note you'll need to have appropriate elevated rights to run the app (Group.ReadWrite.All and User.ReadWrite.All)
+
+7. Choose operation, such as 'Get My Teams', 'Get Channels', 'Create Channel' or 'Post Message'.
+
+8. Response information is displayed at the bottom of the page.
+

@@ -12,6 +12,9 @@ using System;
 
 using System.Net.Http;
 using Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Configuration;
 
 namespace GraphAPI.Web.Controllers
 {
@@ -27,35 +30,293 @@ namespace GraphAPI.Web.Controllers
 
         }
 
-        public ActionResult Index()
+        private async Task<ActionResult> WithExceptionHandling(Func<string, FormOutput> f, [CallerMemberName] string callerName = "")
         {
-            return View("Graph");
+            return await WithExceptionHandlingAsync(
+                async s => f(s),
+                callerName);
+        }
+
+        private async Task<ActionResult> WithExceptionHandlingAsync(Func<string, Task<FormOutput>> f, [CallerMemberName] string callerName = "")
+        {
+            try
+            {
+                if (ConfigurationManager.AppSettings["ida:AppId"] == null
+                    || ConfigurationManager.AppSettings["ida:AppSecret"] == null)
+                {
+                    return RedirectToAction("Index", "Error", new {
+                        message = "You need to put your appid and appsecret in Web.config.secrets. See CSharp\\README.md for details."
+                    });
+                }
+
+                // Get an access token.
+                string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
+                graphService.accessToken = accessToken;
+                FormOutput output = await f(accessToken);
+
+                output.Action = callerName.Replace("Form", "Action");
+
+                output.UserUpn = await graphService.GetMyId(accessToken); // todo: cache
+
+                if (output.ShowTeamDropdown)
+                    output.Teams = (await graphService.NewGetMyTeams(accessToken)).ToArray();
+                if (output.ShowGroupDropdown)
+                    output.Groups = (await graphService.NewGetMyGroups(accessToken)).ToArray();
+
+                //results.Items = await graphService.GetMyTeams(accessToken, Convert.ToString(Resource.Prop_ID));
+                return View("Graph", output);
+            }
+            catch (Exception e)
+            {
+                if (e.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
+                return RedirectToAction("Index", "Error", new { message = Resource.Error_Message + Request.RawUrl + ": " + e.Message });
+            }
+
         }
 
         [Authorize]
-        public async Task<ActionResult> GetMyTeamsLoad()
+        public async Task<ActionResult> GetTeamsForm()
         {
-            await GetMyId();
-
-            ViewBag.GetMyTeamsLoad = "Enable";
-            return View("Graph");
+            return await WithExceptionHandling(
+                token =>
+                {
+                    return new FormOutput()
+                    {
+                        ShowTeamDropdown=true
+                    };
+                }
+                );
         }
 
         [Authorize]
-        public async Task<ActionResult> GetChannelsLoad()
+        public async Task<ActionResult> GetTeamsAction(FormOutput data)
         {
-            await GetMyId();
-            
-            ViewBag.GetChannelsLoad = "Enable";
-            return View("Graph");
+            return await WithExceptionHandlingAsync(
+                async token =>
+                {
+                    var teams = (await graphService.NewGetMyTeams(token)).ToArray();
+                    return new FormOutput()
+                    {
+                        Teams = teams,
+                        ShowTeamOutput = true
+                    };
+                }
+                );
         }
 
         [Authorize]
-        public async Task<ActionResult> GetGroupLoad()
+        public async Task<ActionResult> GetChannelsForm()
         {
-            await GetMyId();
-            ViewBag.GetGroupLoad = "Enable";
-            return View("Graph");
+            return await WithExceptionHandling(
+                token =>
+                {
+                    return new FormOutput()
+                    {
+                        ShowTeamDropdown = true,
+                        ButtonLabel="Get channels",
+                    };
+                }
+                );
+        }
+
+        [Authorize]
+        public async Task<ActionResult> GetChannelsAction(FormOutput data)
+        {
+            return await WithExceptionHandlingAsync(
+                async token =>
+                {
+                    var channels = (await graphService.NewGetChannels(token, data.SelectedTeam)).ToArray();
+                    return new FormOutput()
+                    {
+                        Channels = channels,
+                        ShowChannelOutput = true
+                    };
+                }
+                );
+        }
+
+        [Authorize]
+        public async Task<ActionResult> GetAppsForm()
+        {
+            return await WithExceptionHandling(
+                token =>
+                {
+                    return new FormOutput()
+                    {
+                        ShowTeamDropdown = true,
+                        ButtonLabel = "Get Apps",
+                    };
+                }
+                );
+        }
+
+        [Authorize]
+        public async Task<ActionResult> GetAppsAction(FormOutput data)
+        {
+            return await WithExceptionHandlingAsync(
+                async token =>
+                {
+                    var apps = (await graphService.NewGetApps(token, data.SelectedTeam)).ToArray();
+                    return new FormOutput()
+                    {
+                        Apps = apps,
+                        ShowAppOutput = true
+                    };
+                }
+                );
+        }
+
+
+
+        [Authorize]
+        public async Task<ActionResult> PostChannelsForm()
+        {
+            return await WithExceptionHandling(
+                token =>
+                {
+                    return new FormOutput()
+                    {
+                        ShowTeamDropdown = true,
+                        ShowNameInput = true,
+                        ShowDescriptionInput = true,
+                        ButtonLabel = "Create channel",
+                    };
+                }
+                );
+        }
+
+        [Authorize]
+        public async Task<ActionResult> PostChannelsAction(FormOutput data)
+        {
+            return await WithExceptionHandlingAsync(
+                async token =>
+                {
+                    await graphService.CreateChannel(token,
+                        data.SelectedTeam, data.NameInput, data.DescriptionInput);
+                    var channels = (await graphService.NewGetChannels(token, data.SelectedTeam)).ToArray();
+                    return new FormOutput()
+                    {
+                        Channels = channels,
+                        ShowChannelOutput = true
+                    };
+                }
+                );
+        }
+
+        [Authorize]
+        public async Task<ActionResult> PostMessageForm()
+        {
+            return await WithExceptionHandling(
+                token =>
+                {
+                    return new FormOutput()
+                    {
+                        ShowTeamDropdown = true,
+                        ShowChannelDropdown = true,
+                        ShowMessageBodyInput = true,
+                        ButtonLabel = "Post Message",
+                    };
+                }
+                );
+        }
+
+        [Authorize]
+        public async Task<ActionResult> PostMessageAction(FormOutput data)
+        {
+            return await WithExceptionHandlingAsync(
+                async token =>
+                {
+                    await graphService.PostMessage(token,
+                        data.SelectedTeam, data.SelectedChannel, data.MessageBodyInput);
+                    return new FormOutput()
+                    {
+                        SuccessMessage = "Done",
+                    };
+                }
+                );
+        }
+
+
+        [Authorize]
+        public async Task<ActionResult> PostGroupForm()
+        {
+            return await WithExceptionHandling(
+                token =>
+                {
+                    return new FormOutput()
+                    {
+                        ShowDescriptionInput = true,
+                        ShowDisplayNameInput = true,
+                        ShowMailNicknameInput = true,
+                        ButtonLabel = "Create team",
+                    };
+                }
+                );
+        }
+
+        [Authorize]
+        public async Task<ActionResult> PostGroupAction(FormOutput data)
+        {
+            return await WithExceptionHandlingAsync(
+                async token =>
+                {
+                    Group group = await graphService.NewCreateNewTeamAndGroup(token, data.DisplayNameInput, data.MailNicknameInput, data.DescriptionInput);
+                    var teams = (await graphService.NewGetMyTeams(token)).ToArray();
+                    return new FormOutput()
+                    {
+                        Teams = teams,
+                        ShowTeamOutput = true
+                    };
+                }
+                );
+        }
+
+
+        [Authorize]
+        public async Task<ActionResult> Index()
+        {
+            return await WithExceptionHandling(
+                token =>
+                {
+                    return new FormOutput()
+                    {
+                    };
+                }
+                );
+        }
+
+
+
+        [Authorize]
+        public async Task<ActionResult> AddTeamToGroupForm()
+        {
+            return await WithExceptionHandling(
+                token =>
+                {
+                    return new FormOutput()
+                    {
+                        ShowGroupDropdown = true,
+                        ButtonLabel = "Create team",
+                    };
+                }
+                );
+        }
+
+        [Authorize]
+        public async Task<ActionResult> AddTeamToGroupAction(FormOutput data)
+        {
+            return await WithExceptionHandlingAsync(
+                async token =>
+                {
+                    await graphService.AddTeamToGroup(data.SelectedTeam, token);
+                    var teams = (await graphService.NewGetMyTeams(token)).ToArray();
+                    return new FormOutput()
+                    {
+                        Teams = teams,
+                        ShowTeamOutput = true
+                    };
+                }
+                );
         }
 
         [Authorize]
@@ -84,33 +345,6 @@ namespace GraphAPI.Web.Controllers
         }
 
 
-        [Authorize]
-        public async Task<ActionResult> CreateChannelLoad()
-        {
-            await GetMyId();
-
-            ViewBag.CreateChannelLoad = "Enable";
-            return View("Graph");
-        }
-
-        [Authorize]
-        public async Task<ActionResult> PostMessageLoad()
-        {
-            await GetMyId();
-
-            ViewBag.PostMessageLoad = "Enable";
-            return View("Graph");
-        }
-
-        [Authorize]
-        public async Task<ActionResult> GetAppsLoad()
-        {
-            await GetMyId();
-
-            ViewBag.GetAppsLoad = "Enable";
-            return View("Graph");
-        }
-
 
         
         /// <summary>
@@ -136,95 +370,6 @@ namespace GraphAPI.Web.Controllers
             }
         }
 
-        /// <summary>
-        /// Get all teams which user is the member of.
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        public async Task<ActionResult> GetMyTeams()
-        {
-            ResultsViewModel results = new ResultsViewModel();
-
-            try
-            {
-                string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                results.Items = await graphService.GetMyTeams(accessToken, Convert.ToString(Resource.Prop_ID));
-
-                // Reset the status to display when the page reloads.
-                ViewBag.UserId = Request.Form["user-id"];
-                ViewBag.GetMyTeamsLoad = "Enable";
-                ViewBag.GetMyTeamsResult = "Enable";
-
-                return View("Graph", results);
-            }
-            catch (Exception e)
-            {
-                if (e.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
-                return RedirectToAction("Index", "Error", new { message = Resource.Error_Message + Request.RawUrl + ": " + e.Message });
-            }
-        }
-
-        /// <summary>
-        /// Get all channels of the given.
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        public async Task<ActionResult> GetChannels()
-        {
-            ResultsViewModel results = new ResultsViewModel();
-
-            try
-            {
-                string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                results.Items = await graphService.GetChannels(accessToken, Request.Form["group-id"], Resource.Prop_ID);
-
-                // Reset the status to display when the page reloads.
-                ViewBag.UserId = Request.Form["user-id"];
-                ViewBag.GroupId = Request.Form["group-id"];
-                ViewBag.GetChannelsLoad = "Enable";
-                ViewBag.GetChannelsResult = "Enable";
-
-                return View("Graph", results);
-            }
-            catch (Exception e)
-            {
-                if (e.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
-                return RedirectToAction("Index", "Error", new { message = Resource.Error_Message + Request.RawUrl + ": " + e.Message });
-            }
-        }
-
-        /// <summary>
-        /// Create new channel.
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        public async Task<ActionResult> CreateChannel()
-        {
-            try
-            {
-                string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                HttpResponseMessage response = await graphService.CreateChannel(accessToken,
-                    Request.Form["group-id"], Request.Form["channel-name"], Request.Form["channel-description"]);
-                if (response != null && response.IsSuccessStatusCode)
-                    ViewBag.CreateChannelMessage = Resource.TeamsGraph_CreateGroup_Success_Result;
-                else
-                    ViewBag.CreateChannelMessage = response.ReasonPhrase;
-
-                // Reset the status to display when the page reloads.
-                ViewBag.UserId = Request.Form["user-id"];
-                ViewBag.GroupId = Request.Form["group-id"];
-                ViewBag.ChannelName = Request.Form["channel-name"];
-                ViewBag.ChannelDescription = Request.Form["channel-description"];
-                ViewBag.CreateChannelLoad = "Enable";
-
-                return View("Graph");
-            }
-            catch (Exception e)
-            {
-                if (e.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
-                return RedirectToAction("Index", "Error", new { message = Resource.Error_Message + Request.RawUrl + ": " + e.Message });
-            }
-        }
 
         [Authorize]
         public async Task<ActionResult> AddTeamToGroup()
@@ -234,12 +379,8 @@ namespace GraphAPI.Web.Controllers
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
                 string groupId = Request.Form["group-id"];
 
-                String response = await graphService.AddTeamToGroup(groupId, accessToken);
-                    
-                if (response != null )
-                    ViewBag.CreateTeamMessage = "Successfully created/updated a team";
-                else
-                    ViewBag.CreateTeamMessage = "Fail";
+                await graphService.AddTeamToGroup(groupId, accessToken);
+                ViewBag.CreateTeamMessage = "Successfully created/updated a team";
 
                 return Content(ViewBag.CreateTeamMessage);
             }
@@ -257,12 +398,8 @@ namespace GraphAPI.Web.Controllers
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
                 string groupId = Request.Form["group-id"];
 
-                String response = await graphService.UpdateTeam(groupId, accessToken);
-
-                if (response != null)
-                    ViewBag.CreateTeamMessage = "Successfully updated a team";
-                else
-                    ViewBag.CreateTeamMessage = "Fail";
+                await graphService.UpdateTeam(groupId, accessToken);
+                ViewBag.CreateTeamMessage = "Successfully updated a team";
 
                 return Content(ViewBag.CreateTeamMessage);
             }
@@ -274,56 +411,6 @@ namespace GraphAPI.Web.Controllers
         }
 
 
-        /// <summary>
-        /// Start a new chat thread in channel
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        public async Task<ActionResult> PostMessage()
-        {
-            try
-            {
-                string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                HttpResponseMessage response = await graphService.PostMessage(accessToken,
-                    Request.Form["group-id"], Request.Form["channel-id"], Request.Form["message"]);
-
-                if (response != null && response.IsSuccessStatusCode)
-                    ViewBag.PostMessage = Resource.TeamsGraph_PostMessage_Success_Result;
-                else
-                    ViewBag.PostMessage = response.ReasonPhrase;
-
-                // Reset the status to display when the page reloads.
-                ViewBag.UserId = Request.Form["user-id"];
-                ViewBag.groupId = Request.Form["group-id"];
-                ViewBag.ChannelId = Request.Form["channel-id"];
-                ViewBag.PostMessageLoad = "Enable";
-
-                return View("Graph");
-            }
-            catch (Exception e)
-            {
-                if (e.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
-                return RedirectToAction("Index", "Error", new { message = Resource.Error_Message + Request.RawUrl + ": " + e.Message });
-            }
-        }
-
-        [Authorize]
-        public async Task<String> CreateNewTeamAndGroup(Group group)
-        {
-            try
-            {
-                string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                String message = await graphService.CreateNewTeamAndGroup(accessToken, group);
-                return message;
-            }
-            catch (Exception e)
-            {
-                if (e.Message == Resource.Error_AuthChallengeNeeded)
-                    return "Fail";
-                return e.Message;
-            }
-        }
-
         [Authorize]
         public async Task<String> AddMember(Member member)
         {
@@ -331,7 +418,7 @@ namespace GraphAPI.Web.Controllers
             {
                 string groupId = member.groupId;
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                await graphService.AddMember(groupId, member, accessToken);
+                await graphService.AddMember(groupId, member.id, isOwner: false);
                 return "Success";
             }
             catch (Exception e)
@@ -341,31 +428,6 @@ namespace GraphAPI.Web.Controllers
             }
         }
 
-
-        public async Task<ActionResult> ListApps()
-        {
-            ResultsViewModel results = new ResultsViewModel();
-
-            try
-            {
-                string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                results.Items = await graphService.ListApps(
-                    accessToken, Request.Form["teamId"], Resource.Prop_ID);
-
-                // Reset the status to display when the page reloads.
-                ViewBag.UserId = Request.Form["user-id"];
-                ViewBag.GroupId = Request.Form["group-id"];
-                ViewBag.GetAppsLoad = "Enable";
-                ViewBag.GetAppsLoadResult = "Enable";
-
-                return View("Graph", results);
-            }
-            catch (Exception e)
-            {
-                if (e.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
-                return RedirectToAction("Index", "Error", new { message = Resource.Error_Message + Request.RawUrl + ": " + e.Message });
-            }
-        }
 
         public ActionResult About()
         {

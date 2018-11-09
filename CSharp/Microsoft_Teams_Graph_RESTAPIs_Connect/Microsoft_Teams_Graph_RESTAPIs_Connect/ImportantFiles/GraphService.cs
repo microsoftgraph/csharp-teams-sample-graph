@@ -20,7 +20,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
         }
     }
 
-    public class GraphService
+    public class GraphService : HttpHelpers
     {
         private static string GraphRootUri = ConfigurationManager.AppSettings["ida:GraphRootUri"];
 
@@ -32,40 +32,46 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
         /// <param name="channelName">New channel name</param>
         /// <param name="channelDescription">New channel description</param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> CreateChannel(string accessToken, string teamId, string channelName, string channelDescription)
+        public async Task CreateChannel(string accessToken, string teamId, string channelName, string channelDescription)
         {
-            string endpoint = $"{GraphRootUri}/teams/{teamId}/channels";
-
-            Channel content = new Channel()
-            {
-                description = channelDescription,
-                displayName = channelName
-            };
-
-            HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, content);
-
-            return response;//.ReasonPhrase;
+            await HttpPost($"/teams/{teamId}/channels",
+                new Channel()
+                {
+                    description = channelDescription,
+                    displayName = channelName
+                });
         }
 
-        /// <summary>
-        /// Get all channels of the given.
-        /// </summary>
-        /// <param name="accessToken">Access token to validate user</param>
-        /// <param name="teamId">Id of the team to get all associated channels</param>
-        /// <returns></returns>
-        public async Task<IEnumerable<ResultsItem>> GetChannels(string accessToken, string teamId, string resourcePropId)
+        public async Task<IEnumerable<Channel>> NewGetChannels(string accessToken, string teamId)
         {
             string endpoint = $"{GraphRootUri}/teams/{teamId}/channels";
-
-            List<ResultsItem> items = new List<ResultsItem>();
             HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Get, endpoint, accessToken);
+            return await ParseList<Channel>(response);
+        }
+
+        private static IEnumerable<T> ParseList<T>(string response)
+        {
+                var t = JsonConvert.DeserializeObject<ResultList<T>>(response);
+                return t.value;
+        }
+
+        private static async Task<IEnumerable<T>> ParseList<T>(HttpResponseMessage response)
+        {
             if (response != null && response.IsSuccessStatusCode)
             {
-                items = await ServiceHelper.GetResultsItem(response, "id", "displayName", resourcePropId);
-
+                string content = await response.Content.ReadAsStringAsync();
+                var t = JsonConvert.DeserializeObject<ResultList<T>>(content);
+                return t.value;
             }
-            return items;
+            return new T[0];
         }
+
+        public async Task<IEnumerable<TeamsApp>> NewGetApps(string accessToken, string teamId)
+        {
+            string payload = await HttpGet($"/teams/{teamId}/apps");
+            return ParseList<TeamsApp>(payload);
+        }
+
 
         /// <summary>
         /// Get the current user's id from their profile.
@@ -86,30 +92,22 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             return userId?.Trim();
         }
 
-        /// <summary>
-        /// Get all teams which user is the member of.
-        /// </summary>
-        /// <param name="accessToken">Access token to validate user</param>
-        /// <returns></returns>
-        public async Task<IEnumerable<ResultsItem>> GetMyTeams(string accessToken, string resourcePropId)
+        public async Task<IEnumerable<Team>> NewGetMyTeams(string accessToken)
         {
-            string endpoint = $"{GraphRootUri}/me/joinedTeams";
-
-            List<ResultsItem> items = new List<ResultsItem>();
-            HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Get, endpoint, accessToken);
-            if (response != null && response.IsSuccessStatusCode)
-            {
-                items = await ServiceHelper.GetResultsItem(response, "id", "displayName", resourcePropId);
-
-            }
-            return items;
+            string payload = await HttpGet($"/me/joinedTeams");
+            return ParseList<Team>(payload);
         }
 
-        public async Task<HttpResponseMessage> PostMessage(string accessToken, string teamId, string channelId, string message)
+        public async Task<IEnumerable<Group>> NewGetMyGroups(string accessToken)
         {
-            string endpoint = $"{GraphRootUri}/teams/{teamId}/channels/{channelId}/chatThreads";
+            string payload = await HttpGet($"/me/joinedGroups");
+            return ParseList<Group>(payload);
+        }
 
-            PostMessage content = new PostMessage()
+        public async Task PostMessage(string accessToken, string teamId, string channelId, string message)
+        {
+            await HttpPost($"/teams/{teamId}/channels/{channelId}/chatThreads",
+                 new PostMessage()
             {
                 rootMessage = new RootMessage()
                 {
@@ -118,33 +116,27 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
                         content = message
                     }
                 }
-            };
-            List<ResultsItem> items = new List<ResultsItem>();
-            HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, content);
-
-            return response;//response.ReasonPhrase;
+            });
         }
 
-        public async Task<string> CreateNewTeamAndGroup(string accessToken, Group group)
+        public async Task<Group> NewCreateNewTeamAndGroup(string accessToken, String displayName, String mailNickname, String description)
         {
             // create group
-            string endpoint = $"{GraphRootUri}/groups";
-            if (group != null)
+            Group groupParams = new Group()
             {
-                group.groupTypes = new string[] { "Unified" };
-                group.mailEnabled = true;
-                group.securityEnabled = false;
-                group.visibility = "Private";
-            }
+                displayName = displayName,
+                mailNickname = mailNickname,
+                description = description,
 
-            HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, group);
-            if (!response.IsSuccessStatusCode)
-            {
-                return await response.Content.ReadAsStringAsync();
-            }
+                groupTypes = new string[] { "Unified" },
+                mailEnabled = true,
+                securityEnabled = false,
+                visibility = "Private",
+            };
 
-            string responseBody = await response.Content.ReadAsStringAsync(); ;
-            string groupId = responseBody.Deserialize<Group>().id; // groupId is the same as teamId
+            Group createdGroup = (await HttpPost($"/groups", groupParams))
+                            .Deserialize<Group>();
+            string groupId = createdGroup.id;
 
             // add me as member
             string me = await GetMyId(accessToken);
@@ -155,35 +147,32 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
 
             // create team
             await AddTeamToGroup(groupId, accessToken);
-            return $"Created {groupId}";
+            return createdGroup;
         }
 
-        public async Task<String> AddTeamToGroup(string groupId, string accessToken)
+        public async Task AddTeamToGroup(string groupId, string accessToken)
         {
-            string endpoint = $"{GraphRootUri}/groups/{groupId}/team";
-            Team team = new Models.Team();
-            team.guestSettings = new Models.TeamGuestSettings() { allowCreateUpdateChannels = false, allowDeleteChannels = false };
-
-            HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Put, endpoint, accessToken, team);
-            if (!response.IsSuccessStatusCode)
-                throw new Exception(response.ReasonPhrase);
-            return response.ReasonPhrase;
+            await HttpPut($"/groups/{groupId}/team",
+                new Team()
+                {
+                    guestSettings = new TeamGuestSettings()
+                    {
+                        allowCreateUpdateChannels = false,
+                        allowDeleteChannels = false
+                    }
+                });
         }
 
-        public async Task<String> UpdateTeam(string teamId, string accessToken)
+        public async Task UpdateTeam(string teamId, string accessToken)
         {
-            string endpoint = $"{GraphRootUri}/teams/{teamId}";
-
-            Team team = new Models.Team();
-            team.guestSettings = new Models.TeamGuestSettings() { allowCreateUpdateChannels = true, allowDeleteChannels = false };
-
-            HttpResponseMessage response = await ServiceHelper.SendRequest(new HttpMethod("PATCH"), endpoint, accessToken, team);
-            if (!response.IsSuccessStatusCode)
-                throw new Exception(response.ReasonPhrase);
-            return response.ReasonPhrase;
+            await HttpPatch($"/teams/{teamId}",
+                new Team()
+                {
+                    guestSettings = new TeamGuestSettings() { allowCreateUpdateChannels = true, allowDeleteChannels = false }
+                });
         }
 
-        public async Task AddMember(string teamId, Member member, string accessToken)
+        public async Task AddMember(string teamId, string upn, bool isOwner = false)
         {
             // If you have a user's UPN, you can add it directly to a group, but then there will be a 
             // significant delay before Microsoft Teams reflects the change. Instead, we find the user 
@@ -193,45 +182,14 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             // for more about delays with adding members.
 
             // Step 1 -- Look up the user's id from their UPN
-            string endpoint = $"{GraphRootUri}/users/{member.upn}";
-            HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Get, endpoint, accessToken);
-            string responseBody = await response.Content.ReadAsStringAsync();
-            if (!response.IsSuccessStatusCode)
-                throw new Exception(response.ReasonPhrase);
-
-            String userId = responseBody.Deserialize<Member>().id;
+            String userId = (await HttpGet($"/users/{upn}")).Deserialize<User>().id;
 
             // Step 2 -- add that id to the group
-            string payload = $"{{ '@odata.id': '{GraphRootUri}/users/{userId}' }}";
-            endpoint = $"{GraphRootUri}/groups/{teamId}/members/$ref";
+            string payload = $"{{ '@odata.id': '{graphBetaEndpoint}/users/{userId}' }}";
+            await HttpPost($"/groups/{teamId}/members/$ref", payload);
 
-            HttpResponseMessage responseRef = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, payload);
-            if (!response.IsSuccessStatusCode)
-                throw new Exception(response.ReasonPhrase);
-
-            if (member.owner)
-            {
-                endpoint = $"{GraphRootUri}/groups/{teamId}/owners/$ref";
-                HttpResponseMessage responseOwner = await ServiceHelper.SendRequest(HttpMethod.Post, endpoint, accessToken, payload);
-                if (!response.IsSuccessStatusCode)
-                    throw new Exception(response.ReasonPhrase);
-            }
-        }
-
-        public async Task<IEnumerable<ResultsItem>> ListApps(string accessToken, string teamId, string resourcePropId)
-        {
-            HttpResponseMessage response = await ServiceHelper.SendRequest(
-                HttpMethod.Get, 
-                $"{GraphRootUri}/teams/{teamId}/apps",
-                accessToken);
-            string responseBody = await response.Content.ReadAsStringAsync();
-
-            List<ResultsItem> items = new List<ResultsItem>();
-            if (response != null && response.IsSuccessStatusCode)
-            {
-                items = await ServiceHelper.GetResultsItem(response, "id", "displayName", resourcePropId);
-            }
-            return items;
+            if (isOwner)
+                await HttpPost($"/groups/{teamId}/owners/$ref", payload);
         }
     }
 }

@@ -242,6 +242,7 @@
     </Compile>
     <Compile Include="ImportantFiles\GraphService.cs" />
     <Compile Include="ImportantFiles\ServiceHelper.cs" />
+    <Compile Include="Models\HtmlHelpers.cs" />
     <Compile Include="Models\TeamsApp.cs" />
     <Compile Include="Models\Clone.cs" />
     <Compile Include="Models\Channel.cs" />
@@ -261,6 +262,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SessionTokenCache\SessionTokenCache.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Views\MyExtensionMethods.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -329,6 +331,8 @@
     <Content Include="Views\Home\_Member.cshtml" />
     <Content Include="Views\Home\_CreateUpdateTeam.cshtml" />
     <Content Include="Views\Home\_AppList.cshtml" />
+    <Content Include="Views\Shared\_ResultsTable.cshtml" />
+    <Content Include="Web.config.secrets" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_GlobalResources\Resource.resx">
@@ -365,7 +369,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>2937</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:55065/</IISUrl>
+          <IISUrl>http://localhost:55069/</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://localhost:55069/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

@@ -1,0 +1,24 @@
+﻿<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
+        See LICENSE in the source repository root for complete license information. -->
+@using Resources;
+@model IEnumerable<SelectListItem>
+
+<div class="col-md-12">
+    <div class="col-md-12">
+        <table id="entity">
+            @{ 
+                int i = 0;
+                foreach (var t in Model)
+                {
+                    //var color = (i % 2) == 0 ? "white" : "lavender";
+                    var color = (i % 2) == 0 ? "" : "bluerow";
+                    <tr class=@color>
+                        <td class="pad" style="padding-left: 10px" ><b>@t.Text</b></td>
+                        <td style="padding-left: 10px; padding-right: 10px">@t.Value</td>
+                    </tr>
+                    i++;
+                }
+            }
+        </table>
+    </div>
+</div>

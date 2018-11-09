@@ -15,3 +15,11 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.bluerow {
+    background-color: lavender
+}
+
+label {
+    margin-right: 12px;
+}
