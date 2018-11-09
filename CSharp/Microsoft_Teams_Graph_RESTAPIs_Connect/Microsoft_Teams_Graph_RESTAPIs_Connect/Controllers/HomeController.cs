@@ -14,6 +14,7 @@ using System.Net.Http;
 using Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Configuration;
 
 namespace GraphAPI.Web.Controllers
 {
@@ -40,6 +41,14 @@ namespace GraphAPI.Web.Controllers
         {
             try
             {
+                if (ConfigurationManager.AppSettings["ida:AppId"] == null
+                    || ConfigurationManager.AppSettings["ida:AppSecret"] == null)
+                {
+                    return RedirectToAction("Index", "Error", new {
+                        message = "You need to put your appid and appsecret in Web.config.secrets. See CSharp\\README.md for details."
+                    });
+                }
+
                 // Get an access token.
                 string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
                 graphService.accessToken = accessToken;
