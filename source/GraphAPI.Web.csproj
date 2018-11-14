@@ -323,14 +323,6 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Shared\_ResultsPartial.cshtml" />
-    <Content Include="Views\Home\_CreateChannel.cshtml" />
-    <Content Include="Views\Home\_PostMessage.cshtml" />
-    <Content Include="Views\Home\_Team.cshtml" />
-    <Content Include="Views\Home\_Channels.cshtml" />
-    <Content Include="Views\Home\_Group.cshtml" />
-    <Content Include="Views\Home\_Member.cshtml" />
-    <Content Include="Views\Home\_CreateUpdateTeam.cshtml" />
-    <Content Include="Views\Home\_AppList.cshtml" />
     <Content Include="Views\Shared\_ResultsTable.cshtml" />
     <Content Include="Web.config.secrets" />
   </ItemGroup>
