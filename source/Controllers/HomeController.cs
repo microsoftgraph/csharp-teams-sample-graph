@@ -391,43 +391,66 @@ namespace GraphAPI.Web.Controllers
             }
         }
 
-        public async Task<ActionResult> UpdateTeam()
+        [Authorize]
+        public async Task<ActionResult> UpdateTeamForm()
         {
-            try
-            {
-                string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                string groupId = Request.Form["group-id"];
-
-                await graphService.UpdateTeam(groupId, accessToken);
-                ViewBag.CreateTeamMessage = "Successfully updated a team";
-
-                return Content(ViewBag.CreateTeamMessage);
-            }
-            catch (Exception e)
-            {
-                if (e.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
-                return RedirectToAction("Index", "Error", new { message = Resource.Error_Message + Request.RawUrl + ": " + e.Message });
-            }
+            return await WithExceptionHandling(
+                token =>
+                {
+                    return new FormOutput()
+                    {
+                        ShowTeamDropdown = true,
+                        ButtonLabel = "Change guest settings",
+                    };
+                }
+                );
         }
-
 
         [Authorize]
-        public async Task<String> AddMember(Member member)
+        public async Task<ActionResult> UpdateTeamAction(FormOutput data)
         {
-            try
-            {
-                string groupId = member.groupId;
-                string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                await graphService.AddMember(groupId, member.id, isOwner: false);
-                return "Success";
-            }
-            catch (Exception e)
-            {
-
-                return e.Message;
-            }
+            return await WithExceptionHandlingAsync(
+                async token =>
+                {
+                    await graphService.UpdateTeam(data.SelectedTeam, token);
+                    return new FormOutput()
+                    {
+                        SuccessMessage = "Done",
+                    };
+                }
+                );
         }
 
+        [Authorize]
+        public async Task<ActionResult> AddMemberForm()
+        {
+            return await WithExceptionHandling(
+                token =>
+                {
+                    return new FormOutput()
+                    {
+                        ShowTeamDropdown = true,
+                        ShowUpnInput = true,
+                        ButtonLabel = "Add member",
+                    };
+                }
+                );
+        }
+
+        [Authorize]
+        public async Task<ActionResult> AddMemberAction(FormOutput data)
+        {
+            return await WithExceptionHandlingAsync(
+                async token =>
+                {
+                    await graphService.AddMember(data.SelectedTeam, data.UpnInput, isOwner: false);
+                    return new FormOutput()
+                    {
+                        SuccessMessage = "Done",
+                    };
+                }
+                );
+        }
 
         public ActionResult About()
         {

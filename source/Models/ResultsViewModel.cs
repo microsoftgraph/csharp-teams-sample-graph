@@ -33,7 +33,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
         public string Action { get; set; }
         public string ButtonLabel { get; set; } 
 
-        public string UserUpn { get; set; }
+        public string UserUpn { get; set; } // aka /me
         public string NameInput { get; set; }
         public string DescriptionInput { get; set; }
         public string MessageBodyInput { get; set; }
@@ -81,6 +81,10 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
         public bool ShowAppDropdown { get; set; } = false;
 
         public TeamsApp[] Apps { get; set; } // output
+
+        [Display(Name = "User principal name")]
+        public string UpnInput { get; set; }
+        public bool ShowUpnInput { get; set; } = false;
 
         [Display(Name = "App")]
         public string SelectedApp { get; set; }  // input
