@@ -26,8 +26,8 @@
     @Html.ActionLink("Create Team and Group", "PostGroupForm", "Home")<br />
     @Html.ActionLink("Add Team to Group", "AddTeamToGroupForm", "Home")<br />
 
-    @Html.ActionLink("Add Member", "GetMemberLoad", "Home")<br />
-    @Html.ActionLink("Update Team", "GetTeamLoadUpdate", "Home")<br />
+    @Html.ActionLink("Add Member", "AddMemberForm", "Home")<br />
+    @Html.ActionLink("Update Team", "UpdateTeamForm", "Home")<br />
 
 </div>
 <hr />
@@ -58,6 +58,8 @@
         @Html.MaybeShowResultsTable(Model.ShowAppOutput, Model.Apps, t => t.name, t => t.id)
         @Html.MaybeShowDropdown(Model.ShowAppDropdown, Model.Apps, t => t.name, t => t.id, m => m.SelectedApp)
 
+        @Html.MaybeShowLabeledTextBox(Model.ShowUpnInput, m => m.UpnInput)
+
         @Html.MaybeShowLabeledTextBox(Model.ShowMessageBodyInput, m => m.MessageBodyInput)
     </table>
 
@@ -67,7 +69,7 @@
     }
     if (Model.SuccessMessage != null)
     {
-        @Html.DisplayText(Model.SuccessMessage);
+        <div>@Model.SuccessMessage</div>
     }
 }
 
