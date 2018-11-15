@@ -59,9 +59,9 @@ namespace GraphAPI.Web.Controllers
                 output.UserUpn = await graphService.GetMyId(accessToken); // todo: cache
 
                 if (output.ShowTeamDropdown)
-                    output.Teams = (await graphService.NewGetMyTeams(accessToken)).ToArray();
+                    output.Teams = (await graphService.GetMyTeams(accessToken)).ToArray();
                 if (output.ShowGroupDropdown)
-                    output.Groups = (await graphService.NewGetMyGroups(accessToken)).ToArray();
+                    output.Groups = (await graphService.GetMyGroups(accessToken)).ToArray();
 
                 //results.Items = await graphService.GetMyTeams(accessToken, Convert.ToString(Resource.Prop_ID));
                 return View("Graph", output);
@@ -94,7 +94,7 @@ namespace GraphAPI.Web.Controllers
             return await WithExceptionHandlingAsync(
                 async token =>
                 {
-                    var teams = (await graphService.NewGetMyTeams(token)).ToArray();
+                    var teams = (await graphService.GetMyTeams(token)).ToArray();
                     return new FormOutput()
                     {
                         Teams = teams,
@@ -125,7 +125,7 @@ namespace GraphAPI.Web.Controllers
             return await WithExceptionHandlingAsync(
                 async token =>
                 {
-                    var channels = (await graphService.NewGetChannels(token, data.SelectedTeam)).ToArray();
+                    var channels = (await graphService.GetChannels(token, data.SelectedTeam)).ToArray();
                     return new FormOutput()
                     {
                         Channels = channels,
@@ -156,7 +156,7 @@ namespace GraphAPI.Web.Controllers
             return await WithExceptionHandlingAsync(
                 async token =>
                 {
-                    var apps = (await graphService.NewGetApps(token, data.SelectedTeam)).ToArray();
+                    var apps = (await graphService.GetApps(token, data.SelectedTeam)).ToArray();
                     return new FormOutput()
                     {
                         Apps = apps,
@@ -193,7 +193,7 @@ namespace GraphAPI.Web.Controllers
                 {
                     await graphService.CreateChannel(token,
                         data.SelectedTeam, data.NameInput, data.DescriptionInput);
-                    var channels = (await graphService.NewGetChannels(token, data.SelectedTeam)).ToArray();
+                    var channels = (await graphService.GetChannels(token, data.SelectedTeam)).ToArray();
                     return new FormOutput()
                     {
                         Channels = channels,
@@ -260,8 +260,8 @@ namespace GraphAPI.Web.Controllers
             return await WithExceptionHandlingAsync(
                 async token =>
                 {
-                    Group group = await graphService.NewCreateNewTeamAndGroup(token, data.DisplayNameInput, data.MailNicknameInput, data.DescriptionInput);
-                    var teams = (await graphService.NewGetMyTeams(token)).ToArray();
+                    Group group = await graphService.CreateNewTeamAndGroup(token, data.DisplayNameInput, data.MailNicknameInput, data.DescriptionInput);
+                    var teams = (await graphService.GetMyTeams(token)).ToArray();
                     return new FormOutput()
                     {
                         Teams = teams,
@@ -308,8 +308,8 @@ namespace GraphAPI.Web.Controllers
             return await WithExceptionHandlingAsync(
                 async token =>
                 {
-                    await graphService.AddTeamToGroup(data.SelectedTeam, token);
-                    var teams = (await graphService.NewGetMyTeams(token)).ToArray();
+                    await graphService.AddTeamToGroup(data.SelectedGroup, token);
+                    var teams = (await graphService.GetMyTeams(token)).ToArray();
                     return new FormOutput()
                     {
                         Teams = teams,
@@ -343,9 +343,6 @@ namespace GraphAPI.Web.Controllers
             ViewBag.GetMemberLoad = "Enable";
             return View("Graph");
         }
-
-
-
         
         /// <summary>
         /// Get the current user's id from their profile.
@@ -362,27 +359,6 @@ namespace GraphAPI.Web.Controllers
                 // Get the current user's id.
                 ViewBag.UserId = await graphService.GetMyId(accessToken);
                 return View("Graph");
-            }
-            catch (Exception e)
-            {
-                if (e.Message == Resource.Error_AuthChallengeNeeded) return new EmptyResult();
-                return RedirectToAction("Index", "Error", new { message = Resource.Error_Message + Request.RawUrl + ": " + e.Message });
-            }
-        }
-
-
-        [Authorize]
-        public async Task<ActionResult> AddTeamToGroup()
-        {
-            try
-            {
-                string accessToken = await AuthProvider.Instance.GetUserAccessTokenAsync();
-                string groupId = Request.Form["group-id"];
-
-                await graphService.AddTeamToGroup(groupId, accessToken);
-                ViewBag.CreateTeamMessage = "Successfully created/updated a team";
-
-                return Content(ViewBag.CreateTeamMessage);
             }
             catch (Exception e)
             {

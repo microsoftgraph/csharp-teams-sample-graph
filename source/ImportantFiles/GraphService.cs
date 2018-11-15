@@ -42,34 +42,17 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
                 });
         }
 
-        public async Task<IEnumerable<Channel>> NewGetChannels(string accessToken, string teamId)
+        public async Task<IEnumerable<Channel>> GetChannels(string accessToken, string teamId)
         {
             string endpoint = $"{GraphRootUri}/teams/{teamId}/channels";
             HttpResponseMessage response = await ServiceHelper.SendRequest(HttpMethod.Get, endpoint, accessToken);
             return await ParseList<Channel>(response);
         }
 
-        private static IEnumerable<T> ParseList<T>(string response)
+        public async Task<IEnumerable<TeamsApp>> GetApps(string accessToken, string teamId)
         {
-                var t = JsonConvert.DeserializeObject<ResultList<T>>(response);
-                return t.value;
-        }
-
-        private static async Task<IEnumerable<T>> ParseList<T>(HttpResponseMessage response)
-        {
-            if (response != null && response.IsSuccessStatusCode)
-            {
-                string content = await response.Content.ReadAsStringAsync();
-                var t = JsonConvert.DeserializeObject<ResultList<T>>(content);
-                return t.value;
-            }
-            return new T[0];
-        }
-
-        public async Task<IEnumerable<TeamsApp>> NewGetApps(string accessToken, string teamId)
-        {
-            string payload = await HttpGet($"/teams/{teamId}/apps");
-            return ParseList<TeamsApp>(payload);
+            // to do: switch to the V1 installedApps API
+            return await HttpGetList<TeamsApp>($"/teams/{teamId}/apps", endpoint: graphBetaEndpoint);
         }
 
 
@@ -92,34 +75,33 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             return userId?.Trim();
         }
 
-        public async Task<IEnumerable<Team>> NewGetMyTeams(string accessToken)
+        public async Task<IEnumerable<Team>> GetMyTeams(string accessToken)
         {
-            string payload = await HttpGet($"/me/joinedTeams");
-            return ParseList<Team>(payload);
+            return await HttpGetList<Team>($"/me/joinedTeams");
         }
 
-        public async Task<IEnumerable<Group>> NewGetMyGroups(string accessToken)
+        public async Task<IEnumerable<Group>> GetMyGroups(string accessToken)
         {
-            string payload = await HttpGet($"/me/joinedGroups");
-            return ParseList<Group>(payload);
+            return await HttpGetList<Group>($"/me/joinedGroups", endpoint: graphBetaEndpoint);
         }
 
         public async Task PostMessage(string accessToken, string teamId, string channelId, string message)
         {
             await HttpPost($"/teams/{teamId}/channels/{channelId}/chatThreads",
-                 new PostMessage()
-            {
-                rootMessage = new RootMessage()
+                new PostMessage()
                 {
-                    body = new Message()
+                    rootMessage = new RootMessage()
                     {
-                        content = message
+                        body = new Message()
+                        {
+                            content = message
+                        }
                     }
-                }
-            });
+                },
+                endpoint: graphBetaEndpoint);
         }
 
-        public async Task<Group> NewCreateNewTeamAndGroup(string accessToken, String displayName, String mailNickname, String description)
+        public async Task<Group> CreateNewTeamAndGroup(string accessToken, String displayName, String mailNickname, String description)
         {
             // create group
             Group groupParams = new Group()
@@ -182,7 +164,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
             // for more about delays with adding members.
 
             // Step 1 -- Look up the user's id from their UPN
-            String userId = (await HttpGet($"/users/{upn}")).Deserialize<User>().id;
+            String userId = (await HttpGet<User>($"/users/{upn}")).id;
 
             // Step 2 -- add that id to the group
             string payload = $"{{ '@odata.id': '{graphBetaEndpoint}/users/{userId}' }}";

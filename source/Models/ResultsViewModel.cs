@@ -12,8 +12,6 @@ using System.Web.Mvc;
 
 namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
 {
-
-
     // View model to display a collection of one or more entities returned from the Microsoft Graph. 
     public class ResultsViewModel
     {
@@ -34,10 +32,20 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Models
         public string ButtonLabel { get; set; } 
 
         public string UserUpn { get; set; } // aka /me
+
+        [Display(Name = "Name")]
         public string NameInput { get; set; }
+
+        [Display(Name = "Description")]
         public string DescriptionInput { get; set; }
+
+        [Display(Name = "Message Body")]
         public string MessageBodyInput { get; set; }
+
+        [Display(Name = "Display Name")]
         public String DisplayNameInput { get; set; }
+
+        [Display(Name = "Mail Nickname")]
         public String MailNicknameInput { get; set; }
 
         public string SuccessMessage { get; set; }
