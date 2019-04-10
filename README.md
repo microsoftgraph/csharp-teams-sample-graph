@@ -29,19 +29,22 @@ As the current Microsoft Teams Graph APIs are only accessible by a tenant admin,
 
 You'll need to register an app through the following process:
 
-1. Sign into the [App Registration Portal](https://apps.dev.microsoft.com) using your personal, work or school account.
-2. Choose 'Add an app'.
-3. Enter a name for the app, and choose 'Create application'.
-4. The registration page displays, listing the properties of your app.
-   * Copy the Application Id. This is the unique identifier for your app.
-5. Under 'Application Secrets', choose 'Generate New Password'.
-   * Copy the password from the 'New password generated' dialog.
-6. Under 'Platforms', choose 'Add platform'.
-7. Choose 'Web'.
-8. Make sure 'Allow Implicit Flow' check box is selected, and enter 'Redirect URI' e.g., http://localhost:55065/.  See appropriate sample for more information on the specific port.
-   * The 'Allow Implicit Flow' option enables the hybrid flow. During authentication, this enables the app to receive both sign-in info (the id_token) and artifacts (in this case, an authorization code) that the app can use to obtain an access token.
-9. Under 'Microsoft Graph Permissions', Add 'Group.ReadWrite.All' (Read and write all groups) and 'User.ReadWrite.All' (Read and write all users' full profile) as Delegated and Application Permissions.
-10. Choose Save.
+1. Sign in to the [Azure portal](https://portal.azure.com/) using either a work or school account or a personal Microsoft account.
+2. If your account gives you access to more than one tenant, select your account in the top right corner, and set your portal session to the Azure AD tenant that you want.
+3. In the left-hand navigation pane, select the **Azure Active Directory** service, and then select **App registrations (Preview)** > **New registration**.
+4. When the Register an application page appears, enter your application's registration information:
+   * **Name** - Enter a meaningful application name that will be displayed to users of the app.
+   * **Supported account types** - Select which accounts you would like your application to support.
+   * **Redirect URI (optional)** - Select **Web** and enter 'http://localhost:55065/' for the **Redirect URI**.
+5. When finished, select **Register**.
+6. Azure AD assigns a unique application (client) ID to your app, and you're taken to your application's Overview page. To add additional capabilities to your application, you can select other configuration options including branding, certificates and secrets, API permissions, and more. 
+
+   Copy the Application Id. This is the unique identifier for your app.
+7. Under **Manage** on the left-hand pane, click **Certificates & secrets**.  Under **Client secrets**, click **New client secret**.  Enter a description and an expiration, then click **Add**.  This creates a secret string, or application password, which the application uses to prove it's identity.  
+
+   Copy the value from the new secret.
+8. Under **Manage** on the left-hand pane, click **Authentication**. Under **Implicit grant**, check **Access tokens** and **ID tokens**. During authentication, this enables the app to receive both sign-in info (the id_token) and artifacts (in this case, an authorization code) that the app can use to obtain an access token. Save your changes.
+9. Under **Manage** on the left-hand pane, click **API permissions** and then **Add a new permission**. Select **Microsoft Graph** and then **Delegated permissions**. Add 'Group.ReadWrite.All' (Read and write all groups) and 'User.ReadWrite.All' (Read and write all users' full profile) permissions. Click **Add a new permission** again then **Application permissions**. Add 'Group.ReadWrite.All' (Read and write all groups) and 'User.ReadWrite.All' (Read and write all users' full profile) permissions.
 
 See the individual project readmes for more information.
     
