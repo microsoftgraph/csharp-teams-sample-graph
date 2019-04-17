@@ -29,9 +29,9 @@ As the current Microsoft Teams Graph APIs are only accessible by a tenant admin,
 
 You'll need to register an app through the following process:
 
-1. Sign in to the [Azure portal](https://portal.azure.com/) using either a work or school account or a personal Microsoft account.
+1. Sign in to the [Azure portal](https://go.microsoft.com/fwlink/?linkid=2083908) using either a work or school account or a personal Microsoft account.
 2. If your account gives you access to more than one tenant, select your account in the top right corner, and set your portal session to the Azure AD tenant that you want.
-3. In the left-hand navigation pane, select the **Azure Active Directory** service, and then select **App registrations (Preview)** > **New registration**.
+3. Select **New registration**.
 4. When the Register an application page appears, enter your application's registration information:
    * **Name** - Enter a meaningful application name that will be displayed to users of the app.
    * **Supported account types** - Select which accounts you would like your application to support.
