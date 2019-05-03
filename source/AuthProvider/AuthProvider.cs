@@ -6,7 +6,6 @@
 using Microsoft.Identity.Client;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OpenIdConnect;
-using Microsoft_Teams_Graph_RESTAPIs_Connect.SessionToken;
 using System;
 using System.Configuration;
 using System.Security.Claims;
@@ -25,7 +24,6 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Auth
         private string appId = ServiceHelper.AppId;
         private string appSecret = ServiceHelper.AppSecret;
         private string scopes = ServiceHelper.Scopes;
-        private SessionTokenCache tokenCache { get; set; }
 
         private static readonly AuthProvider instance = new AuthProvider();
         private AuthProvider() { }
@@ -42,25 +40,17 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Auth
         public async Task<string> GetUserAccessTokenAsync()
         {
             string signedInUserID = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
-            tokenCache = new SessionTokenCache(
-                signedInUserID,
-                HttpContext.Current.GetOwinContext().Environment["System.Web.HttpContextBase"] as HttpContextBase);
-            //var cachedItems = tokenCache.ReadItems(appId); // see what's in the cache
-
-            ConfidentialClientApplication cca = new ConfidentialClientApplication(
-                appId,
-                redirectUri,
-                new ClientCredential(appSecret),
-                tokenCache);
+            IConfidentialClientApplication cc = MsalAppBuilder.BuildConfidentialClientApplication();
 
             try
             {
-                AuthenticationResult result = await cca.AcquireTokenSilentAsync(scopes.Split(new char[] { ' ' }));
-                return result.Token;
+                string[] scopes = ServiceHelper.Scopes.Split(new char[] { ' ' });
+                AuthenticationResult result = await cc.AcquireTokenSilent(scopes, ClaimsPrincipal.Current.ToIAccount()).ExecuteAsync();
+                return result.AccessToken;
             }
 
             // Unable to retrieve the access token silently.
-            catch (MsalSilentTokenAcquisitionException)
+            catch (MsalUiRequiredException)
             {
                 HttpContext.Current.Request.GetOwinContext().Authentication.Challenge(
                     new AuthenticationProperties() { RedirectUri = "/" },
