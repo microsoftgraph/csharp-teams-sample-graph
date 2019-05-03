@@ -3,17 +3,17 @@
 *  See LICENSE in the source repository root for complete license information. 
 */
 
-using System.Web;
-using Owin;
+using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
-using System.Configuration;
-using System.Threading.Tasks;
 using Microsoft_Teams_Graph_RESTAPIs_Connect.SessionToken;
-using System.IdentityModel.Tokens;
+using Owin;
+using System.Configuration;
 using System.IdentityModel.Claims;
-using Microsoft.Identity.Client;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace Microsoft_Teams_Graph_RESTAPIs_Connect
 {
