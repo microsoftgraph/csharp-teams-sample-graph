@@ -3,17 +3,16 @@
 *  See LICENSE in the source repository root for complete license information. 
 */
 
-using System.Web;
-using Owin;
+using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
+using Owin;
 using System.Configuration;
-using System.Threading.Tasks;
-using Microsoft_Teams_Graph_RESTAPIs_Connect.SessionToken;
-using System.IdentityModel.Tokens;
 using System.IdentityModel.Claims;
-using Microsoft.Identity.Client;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace Microsoft_Teams_Graph_RESTAPIs_Connect
 {
@@ -28,7 +27,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect
         private static string appSecret = ConfigurationManager.AppSettings["ida:AppSecret"];
         private static string redirectUri = ConfigurationManager.AppSettings["ida:RedirectUri"];
         private static string graphScopes = ConfigurationManager.AppSettings["ida:GraphScopes"];
-
+        private static string authority = "https://login.microsoftonline.com/common/v2.0";
         public void ConfigureAuth(IAppBuilder app)
         {
             app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
@@ -65,14 +64,11 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect
                         {
                             var code = context.Code;
                             string signedInUserID = context.AuthenticationTicket.Identity.FindFirst(ClaimTypes.NameIdentifier).Value;
-                            ConfidentialClientApplication cca = new ConfidentialClientApplication(
-                                appId,
-                                redirectUri,
-                                new ClientCredential(appSecret),
-                                new SessionTokenCache(signedInUserID, context.OwinContext.Environment["System.Web.HttpContextBase"] as HttpContextBase));
+                            IConfidentialClientApplication cc = MsalAppBuilder.BuildConfidentialClientApplication();
                             string[] scopes = graphScopes.Split(new char[] { ' ' });
 
-                            AuthenticationResult result = await cca.AcquireTokenByAuthorizationCodeAsync(scopes, code);
+                            AuthenticationResult result = await cc.AcquireTokenByAuthorizationCode(scopes, code)
+                                                                  .ExecuteAsync();
 
                             // Check whether the login is from the MSA tenant. 
                             // The sample uses this attribute to disable UI buttons for unsupported operations when the user is logged in with an MSA account.

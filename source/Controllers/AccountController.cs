@@ -8,8 +8,6 @@ using System.Web.Mvc;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
-using Microsoft_Teams_Graph_RESTAPIs_Connect.SessionToken;
-using Microsoft_Teams_Graph_RESTAPIs_Connect.Auth;
 using System.Security.Claims;
 
 namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Controllers
@@ -34,9 +32,7 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.Controllers
             {
                 // Get the user's token cache and clear it.
                 string userObjectId = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-                SessionTokenCache tokenCache = new SessionTokenCache(userObjectId, HttpContext);
-                tokenCache.Clear(userObjectId);
+                MsalAppBuilder.ClearUserTokenCache();
             }
 
             // Send an OpenID Connect sign-out request. 
