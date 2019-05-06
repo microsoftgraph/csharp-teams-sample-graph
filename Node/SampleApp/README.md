@@ -9,7 +9,7 @@ The minimum prerequisites to run this sample are:
 * An account with the [appropriate rights](../README.md) to register and run the samples.
 
 ## Register the application:
-Please see the project's [Read Me file](../README.md) for more details.  Note that for the Node sample, you should set your redirect URI to be: http://localhost:55065/login
+Please see the project's [Read Me file](../../README.md) for more details.  Note that for the Node sample, you should set your redirect URI to be: http://localhost:55065/login
 
 ## Build and run the sample app
 1. In app.js, update the process.env variables with your app's ID and secret and 'https://localhost:55065' as the hostname.
