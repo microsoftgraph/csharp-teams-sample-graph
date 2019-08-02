@@ -1,3 +1,18 @@
+---
+page_type: sample
+products:
+- office-teams
+- ms-graph
+languages:
+- csharp
+extensions:
+  contentType: samples
+  technologies:
+  - Microsoft Graph
+  services:
+  - Microsoft Teams
+  createdDate: 5/30/2017 6:00:04 PM
+---
 # Microsoft Teams Graph API Samples
 
 This sample has example calls to many of the Teams Graph APIs, including:
