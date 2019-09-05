@@ -38,7 +38,7 @@ This sample has example calls to many of the Teams Graph APIs, including:
 
 ### O365 Account with Admin privileges
 
-As the current Microsoft Teams Graph APIs are only accessible by a tenant admin, to run the app, you'll need to sign in with an account with admin privileges.  Note that in most companies, you might not have these rights, nor the ability to grant yourself these rights, therefore you might benefit from a developer account through our [Office 365 Developer program](https://dev.office.com/devprogram).  
+To set this app up, you'll need to be a global admin, because only global admins can consent to apps using permissions such as Group.ReadWrite.All. Consider creating your own test tenant by creating a developer account with our [Office 365 Developer program](https://dev.office.com/devprogram).  
 
 ### Registered app
 
