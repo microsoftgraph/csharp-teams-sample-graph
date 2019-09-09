@@ -8,7 +8,7 @@ languages:
 extensions:
   contentType: samples
   technologies:
-  - Microsoft Graph
+  - Microsoft Graph 
   services:
   - Microsoft Teams
   createdDate: 5/30/2017 6:00:04 PM
