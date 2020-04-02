@@ -87,15 +87,12 @@ namespace Microsoft_Teams_Graph_RESTAPIs_Connect.ImportantFiles
 
         public async Task PostMessage(string accessToken, string teamId, string channelId, string message)
         {
-            await HttpPost($"/teams/{teamId}/channels/{channelId}/chatThreads",
+            await HttpPost($"/teams/{teamId}/channels/{channelId}/messages",
                 new PostMessage()
                 {
-                    rootMessage = new RootMessage()
+                    Body = new Message()
                     {
-                        body = new Message()
-                        {
-                            content = message
-                        }
+                        content = message
                     }
                 },
                 endpoint: graphBetaEndpoint);
