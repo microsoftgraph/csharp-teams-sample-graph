@@ -251,7 +251,6 @@
     <Compile Include="Models\PostMessage.cs" />
     <Compile Include="Models\ResultsItem.cs" />
     <Compile Include="Models\ResultsViewModel.cs" />
-    <Compile Include="Models\RootMessage.cs" />
     <Compile Include="Models\Team.cs" />
     <Compile Include="Models\TeamFunSettings.cs" />
     <Compile Include="Models\TeamGuestSetting.cs" />
