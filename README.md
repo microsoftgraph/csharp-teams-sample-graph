@@ -15,6 +15,10 @@ extensions:
 ---
 # Microsoft Teams Graph API Samples
 
+**This project is being archived and replaced with the [Microsoft Graph snippets sample for ASP.NET Core 3.1](https://github.com/microsoftgraph/aspnet-snippets-sample). As part of the archival process, we're closing all open issues and pull requests.**
+
+**You can continue to use this sample "as-is", but it won't be maintained moving forward. We apologize for any inconvenience.**
+
 This sample has example calls to many of the Teams Graph APIs, including:
 
 * Get My Teams
